@@ -29,7 +29,7 @@ public class Person {
 	}
 
 	public int showFist() {
-		System.out.println(name + "出拳：");
+		System.out.println(name + "出（1：布，2：剪刀，3：石头）：");
 		int ret = scanner.nextInt();
 		return ret;
 	}

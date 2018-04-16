@@ -30,12 +30,26 @@ public class Referee {
 	}
 
 	public void start() {
+		System.out.println("===============比赛开始================");
 		while (true) {
+			System.out.println("****************第"+(count+1)+"局****************");
+			/**
+			 * 双方出拳
+			 */
 			int pFist = person.showFist();
 			int aFist = android.showFist();
+			/**
+			 * 显示出拳
+			 */
 			System.out.println(android.getName() + "出“" + fistName[aFist] + "”，" + person.getName() + "出“"
 					+ fistName[pFist] + "”");
+			/**
+			 * 判断大小
+			 */
 			int result = calc(pFist, aFist);
+			/**
+			 * 显示结果
+			 */
 			switch (result) {
 			case 1:
 				System.out.println(person.getName() + "赢了！得1分");
@@ -48,7 +62,13 @@ public class Referee {
 			default:
 				System.out.println("平局！双方不得分");
 			}
+			/**
+			 * 局数+1
+			 */
 			count++;
+			/**
+			 * 显示总结果
+			 */
 			System.out.println("当前局数：" + count + "，双方得分：" + person + "，" + android);
 		}
 	}
