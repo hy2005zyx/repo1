@@ -1,22 +1,32 @@
-package com.ly;
+package com.ly.course05;
 
 import java.util.Scanner;
+
 /**
- * 日历计算
+ * 日历计算，给出一个年份和月份，生成对应的日期
  * @author hy2005zyx
  *
  */
-public class Java05Calendar {
+public class Calendar {
 
 	public static void main(String[] args) {
-
+		//定义月份的天数数组，可以替代if语句或switch语句
 		int[] dayOfMonth = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		//创建屏幕录入对象
 		Scanner scanner = new Scanner(System.in);
 		while (true) {
 			System.out.print("请输入年份：");
 			int year = scanner.nextInt();
+			if(year <= 0) {
+				System.out.println("谢谢使用，再见！");
+				break;
+			}
 			System.out.print("请输入月份：");
 			int month = scanner.nextInt();
+			if(month <= 0) {
+				System.out.println("谢谢使用，再见！");
+				break;
+			}
 
 			/**
 			 * 获取1900.1.1到指定月前一天的天数 = 365 * 年数 + 闰年数 + 本年已过天数
@@ -55,7 +65,7 @@ public class Java05Calendar {
 				}
 			}
 
-			System.out.println("=========================日历=======================");
+			System.out.println("=======================" + year + "年" + month + "月=====================");
 			System.out.println("星期一\t星期二\t星期三\t星期四\t星期五\t星期六\t星期天");
 			/**
 			 * 打印月前空的星期
@@ -78,6 +88,8 @@ public class Java05Calendar {
 			System.out.println("====================================================");
 			System.out.println();
 		}
+		//关闭屏幕录入对象
+		scanner.close();
 	}
 
 }

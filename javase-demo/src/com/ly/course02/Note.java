@@ -1,5 +1,5 @@
-package com.ly;
-public class Java02Note{
+package com.ly.course02;
+public class Note{
 
 	public static void main(String[] args) {
 
