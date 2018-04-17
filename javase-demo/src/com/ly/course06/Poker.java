@@ -10,9 +10,9 @@ public class Poker {
 	public static void main(String[] args) {
 
 		//花色数组，省了判断花色的 switch 或 if 判断
-		String[] flowerNames = { "红桃", "黑桃", "方块", "梅花" };
+		String[] flowerNames = { "红桃", "黑桃", "梅花", "方块" };
 		//牌字数组，省了判断牌字的 switch 或 if 判断
-		String[] numberNames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "J", "Q", "K" };
+		String[] numberNames = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 
 		//多副扑克牌的数量
 		int pokerCount = 4;
@@ -87,6 +87,23 @@ public class Poker {
 			p[i % 4][i / 4] = cards[i];
 		}
 
+		System.out.println("===================排序前的牌===================");
+		/**
+		 * 打印牌
+		 */
+		for (int j = 0; j < p.length; j++) {
+			System.out.print("玩家" + (j + 1) + "的牌：");
+			for (int i = 0; i < p[j].length; i++) {
+				//取花色
+				int flower = p[j][i] / 13;
+				//取牌号 1~9 A~K
+				int number = p[j][i] % 13;
+				System.out.print(flowerNames[flower] + numberNames[number] + ",");
+			}
+			System.out.println();
+		}
+
+		System.out.println();
 		/**
 		 * 整牌（冒泡排序）
 		 */
@@ -105,7 +122,7 @@ public class Poker {
 			}
 		}
 
-		System.out.println("===================发牌后的牌===================");
+		System.out.println("===================排序后的牌===================");
 		/**
 		 * 打印牌
 		 */
@@ -123,13 +140,13 @@ public class Poker {
 
 		System.out.println();
 
-		System.out.println("===================测试对子===================");
+		System.out.println("===================测试同花对子===================");
 		/**
-		 * 显示可出的对子
+		 * 显示可出的同花对子
 		 */
 		int cnt = 3;
 		for (int z = 0; z < p.length; z++) {
-			System.out.print("玩家" + (z + 1) + "可以出的" + cnt + "对子：");
+			System.out.print("玩家" + (z + 1) + "可以出的" + cnt + "同花对子：");
 			for (int j = 0; j < p[z].length - cnt + 1; j++) { //注意：p[0].length - cnt + 1
 				//定义牌的计数器，默认为1，也就当前有的这张牌
 				int count = 1;
@@ -154,7 +171,6 @@ public class Poker {
 					//将循环变量向前推进
 					j += count - 1;
 				}
-
 			}
 			System.out.println();
 			/**
@@ -178,22 +194,22 @@ public class Poker {
 				//count1包括相同牌的数量，因为多副牌同花色的牌有多张，因此：count1 >= count
 				int count1 = 1;
 				//设置起始的牌的花色，表示顺子从这张牌开始计算
-				int curFlower = p[z][j];
+				int beginCard = p[z][j];
 				for (int k = j + 1; k < p[z].length; k++) {
-					if (p[z][k] == curFlower) {
+					if (p[z][k] == beginCard) {
 						//如果当前牌与起始牌一样，则直接跳过，这里只是总牌数+1
 						count1++;
 						continue;
-					} else if (p[z][k] / 13 == (curFlower + 1) / 13 && p[z][k] == curFlower + 1) {
+					} else if (p[z][k] / 13 == (beginCard) / 13 && p[z][k] == beginCard + 1) {
 						/**
 						 * 注意判断条件：
-						 * p[z][k]/13 == (curFlower + 1) / 13	===> 花色相同，表示是同花
-						 * p[z][k] == curFlower + 1 			===> 当前牌比前一张牌大1，表示顺子
+						 * p[z][k]/13 == (beginCard) / 13	===> 当前牌的花色与上一张牌的花色相同，表示是同花
+						 * p[z][k] == beginCard + 1 		===> 当前牌比前一张牌大1，表示顺子
 						 */
 						//总牌数+1
 						count1++;
 						//起始牌+1，顺到一张牌了
-						curFlower++;
+						beginCard++;
 						//顺子牌数+1
 						count++;
 					} else {
