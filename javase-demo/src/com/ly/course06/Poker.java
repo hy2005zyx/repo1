@@ -1,6 +1,7 @@
 package com.ly.course06;
 
 import java.util.Random;
+
 /**
  * 扑克牌洗牌、整排、发牌、计算对子、同花顺的算法例子
  * @author 廖彦
@@ -26,6 +27,7 @@ public class Poker {
 			cards[i] = i % 52;
 		}
 
+		System.out.println("===================洗牌前的牌===================");
 		/**
 		 * 打印新牌
 		 */
@@ -50,10 +52,30 @@ public class Poker {
 		 */
 		Random r = new Random();
 		for (int i = 0; i < cards.length - 1; i++) {
-			int index = r.nextInt(cards.length - i);
+			int index = r.nextInt(cards.length);
 			int temp = cards[i];
 			cards[i] = cards[index];
 			cards[index] = temp;
+		}
+
+		System.out.println("===================洗牌后的牌===================");
+		/**
+		 * 打印洗牌后的牌
+		 */
+		for (int i = 0; i < cards.length; i++) {
+			//取花色
+			int flower = cards[i] / 13;
+			//取牌号 1~9 A~K
+			int number = cards[i] % 13;
+			System.out.print(flowerNames[flower] + numberNames[number] + ",");
+			//每个花色结束后换行
+			if ((i + 1) % 13 == 0) {
+				System.out.println();
+			}
+			//每副牌之间加入空行
+			if ((i + 1) % 52 == 0) {
+				System.out.println();
+			}
 		}
 
 		/**
@@ -83,6 +105,7 @@ public class Poker {
 			}
 		}
 
+		System.out.println("===================发牌后的牌===================");
 		/**
 		 * 打印牌
 		 */
@@ -100,6 +123,7 @@ public class Poker {
 
 		System.out.println();
 
+		System.out.println("===================测试对子===================");
 		/**
 		 * 显示可出的对子
 		 */
@@ -140,6 +164,7 @@ public class Poker {
 
 		System.out.println();
 
+		System.out.println("===================测试同花顺===================");
 		/**
 		 * 显示可出的同花顺
 		 */
@@ -151,7 +176,7 @@ public class Poker {
 				//定义牌的计数器，默认为1，也就当前有的这张牌
 				int count = 1;
 				//count1包括相同牌的数量，因为多副牌同花色的牌有多张，因此：count1 >= count
-				int count1 = 1; 
+				int count1 = 1;
 				//设置起始的牌的花色，表示顺子从这张牌开始计算
 				int curFlower = p[z][j];
 				for (int k = j + 1; k < p[z].length; k++) {
@@ -159,7 +184,7 @@ public class Poker {
 						//如果当前牌与起始牌一样，则直接跳过，这里只是总牌数+1
 						count1++;
 						continue;
-					} else if (p[z][k]/13 == (curFlower + 1) / 13 && p[z][k] == curFlower + 1) {
+					} else if (p[z][k] / 13 == (curFlower + 1) / 13 && p[z][k] == curFlower + 1) {
 						/**
 						 * 注意判断条件：
 						 * p[z][k]/13 == (curFlower + 1) / 13	===> 花色相同，表示是同花
