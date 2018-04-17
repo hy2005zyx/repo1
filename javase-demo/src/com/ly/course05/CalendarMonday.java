@@ -4,10 +4,11 @@ import java.util.Scanner;
 
 /**
  * 日历计算，给出一个年份和月份，生成对应的日期
- * @author hy2005zyx
+ * 注意：这是周一在第一列的显示
+ * @author 廖彦
  *
  */
-public class Calendar {
+public class CalendarMonday {
 
 	public static void main(String[] args) {
 		//定义月份的天数数组，可以替代if语句或switch语句
@@ -42,7 +43,13 @@ public class Calendar {
 			// + 本年已过天数
 			for (int i = 1; i < month; i++) {
 				allDays += dayOfMonth[i];
-				if (month == 2) {
+				/**
+				 * 童鞋们注意啊，下面这段代码的错误我找了半天。
+				 * 证明一个道理：拷贝代码一定要注意逻辑的变化啊！大家要引以为鉴。
+				 * 原来的代码是这样的：if (month == 2) {
+				 * 大家思考下，上面的代码会导致什么问题。
+				 */
+				if (i == 2) {
 					if (year % 400 == 0 || year % 4 == 0 && year % 100 != 0) {
 						allDays++;
 					}
@@ -51,9 +58,10 @@ public class Calendar {
 
 			/**
 			 * 计算该月第一天的星期数，所有天数 模 7 + 1
+			 * 注意：周一在第一列，下面代码的写法
 			 */
 			int weeks = allDays % 7 + 1;
-
+			
 			/**
 			 * 获取该月天数
 			 */
@@ -65,7 +73,9 @@ public class Calendar {
 				}
 			}
 
-			System.out.println("=======================" + year + "年" + month + "月=====================");
+			System.out.println("=======================" + year + "年" 
+					+ month + "月=====================");
+			
 			System.out.println("星期一\t星期二\t星期三\t星期四\t星期五\t星期六\t星期天");
 			/**
 			 * 打印月前空的星期
@@ -78,8 +88,10 @@ public class Calendar {
 			 * 打印日历
 			 */
 			for (int i = 1; i <= thisDays; i++, weeks++) {
-				System.out.print(i);
-				System.out.print("\t");
+				System.out.print(i+"\t");
+				/**
+				 * 注意：周一在第一列，下面判断的代码的写法
+				 */
 				if (weeks % 7 == 0) {
 					System.out.println();
 				}
@@ -88,8 +100,6 @@ public class Calendar {
 			System.out.println("====================================================");
 			System.out.println();
 		}
-		//关闭屏幕录入对象
-		scanner.close();
 	}
 
 }
