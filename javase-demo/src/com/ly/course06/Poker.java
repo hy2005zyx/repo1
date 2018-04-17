@@ -18,7 +18,9 @@ public class Poker {
 
 		//打印新牌
 		for (int i = 0; i < cards.length; i++) {
+			//取花色
 			int flower = cards[i] / 13;
+			//取牌号 1~9 A~K
 			int number = cards[i] % 13;
 			System.out.print(flowerNames[flower] + numberNames[number] + ",");
 			if ((i + 1) % 13 == 0) {
@@ -39,27 +41,18 @@ public class Poker {
 		//发牌
 		int[][] p = new int[4][cards.length / 4];
 		for (int i = 0; i < cards.length; i++) {
-			switch (i % 4) {
-			case 0:
-				p[0][i / 4] = cards[i];
-				break;
-			case 1:
-				p[1][i / 4] = cards[i];
-				break;
-			case 2:
-				p[2][i / 4] = cards[i];
-				break;
-			case 3:
-				p[3][i / 4] = cards[i];
-				break;
-			}
+			//计算拿牌的玩家
+			p[i % 4][i / 4] = cards[i];
 		}
 
 		//整牌（冒泡排序）
+		//遍历玩家
 		for (int j = 0; j < p.length; j++) {
+			//下面是冒泡排序法
 			for (int i = p[0].length; i > 0; i--) {
-				for (int k = 0; k < i - 1; k++) {
+				for (int k = 0; k < i - 1; k++) { 	//注意：内循环的写法 k < i - 1
 					if (p[j][k] > p[j][k + 1]) {
+						//如果前面的牌大于后面的牌，则交换2张牌
 						int tmp = p[j][k];
 						p[j][k] = p[j][k + 1];
 						p[j][k + 1] = tmp;
@@ -72,7 +65,9 @@ public class Poker {
 		for (int j = 0; j < p.length; j++) {
 			System.out.print("玩家" + (j + 1) + "的牌：");
 			for (int i = 0; i < p[j].length; i++) {
+				//取花色
 				int flower = p[j][i] / 13;
+				//取牌号 1~9 A~K
 				int number = p[j][i] % 13;
 				System.out.print(flowerNames[flower] + numberNames[number] + ",");
 			}
@@ -108,14 +103,14 @@ public class Poker {
 				} else {
 					//否则，童鞋们想想是什么情况？要不要处理
 				}
-				
+
 			}
 			System.out.println();
 			/**
 			 * 这个算法还有优化的空间，例如：如果是2副以上的牌，在统计2对子时，
 			 * 如果某个牌有2张以上的，则会出现多次，例如：红桃K,红桃K,红桃K
 			 * 统计会出现：玩家1可以出的2对子：红桃K 红桃K ,红桃K 红桃K ,
-			 * 请思考如何解决该问题？
+			 * 请思考，什么原因造成的？如何解决该问题？
 			 */
 		}
 	}
