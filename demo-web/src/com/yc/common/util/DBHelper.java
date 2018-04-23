@@ -2,7 +2,6 @@ package com.yc.common.util;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -19,9 +18,9 @@ import java.util.Map;
 
 
 public class DBHelper {
-	public static String URL = "";
-	public static String USR = "";
-	public static String PWD = "";
+	public static String URL = "jdbc:mysql://ly/teach?useUnicode=true&amp;characterEncoding=UTF-8";
+	public static String USR = "root";
+	public static String PWD = "123";
 	public static String DRV = "com.mysql.jdbc.Driver";
 	
 	
@@ -34,7 +33,7 @@ public class DBHelper {
 	}
 	
 	//2銆佽幏鍙栬繛鎺�
-	public Connection getCon(){
+	public static Connection getCon(){
 		Connection con = null;
 		try {
 			con = DriverManager.getConnection(URL, USR, PWD);
@@ -46,7 +45,7 @@ public class DBHelper {
 	
 	//3銆佸叧闂祫婧愶紝涔熷彲浠ュ皝瑁�
 	//			鎴戜滑鎬诲叡鏈変笁涓笢瑗胯鍏抽棴
-	public void closeAll( ResultSet rs,  Statement stmt,  Connection con ){
+	public static void closeAll( ResultSet rs,  Statement stmt,  Connection con ){
 		try {
 			if( rs!=null){
 				rs.close();
@@ -72,7 +71,7 @@ public class DBHelper {
 	 * @throws IOException 
 	 * @throws SQLException 
 	 */
-	public int doUpdate(String sql,List<Object> params){
+	public static int doUpdate(String sql,List<Object> params){
 		//瀹氫箟杩斿洖鍊�
 		int result=-1;
 		//鑾峰彇杩炴帴
@@ -93,26 +92,14 @@ public class DBHelper {
 	}
 
 	//璁剧疆鍙傛暟
-	public void doParams(PreparedStatement pstm, List<Object> params){
+	public static void doParams(PreparedStatement pstm, List<Object> params){
 		//棣栧厛锛屽鏋滃弬鏁颁负null锛屽垯涓嶉渶瑕佽缃弬鏁�
 		try {
 			if(pstm!=null && params!=null && params.size()>0){
 				//灏唒arams涓殑鍙傛暟寰幆鍙栧嚭锛屼竴涓竴涓殑璁剧疆鍒皃stm閲岄潰鍘伙紝浣嗘槸娉ㄦ剰涓�涓嬫暟鎹被鍨�
 				for(int i=0;i<params.size();i++){
 					Object o=params.get(i);
-					//鍒ゆ柇绫诲瀷
-					if(o instanceof Integer){
-						Integer t=Integer.parseInt( o.toString() );
-						pstm.setInt(i+1, t);
-					}else if(o instanceof String){
-						pstm.setString(i+1, o.toString());
-					}else if(o instanceof Double){
-						Double d=Double.parseDouble(o.toString());
-						pstm.setDouble(i+1, d);
-					}else{
-						pstm.setBytes(i+1, (byte[]) o);
-					}
-					//long    boolean     blob     clob   xxxxx
+					pstm.setObject(i+1, o);
 				} 
 			}
 		} catch (NumberFormatException e) {
@@ -132,8 +119,8 @@ public class DBHelper {
 	 * @throws IOException 
 	 * @throws SQLException 
 	 */
-	public List<Map<String,String>> findAll(String sql , List<Object> params){
-		List<Map<String,String>> list=new ArrayList<Map<String,String>>();
+	public static List<Map<String,Object>> findAll(String sql , List<Object> params){
+		List<Map<String,Object>> list=new ArrayList<Map<String,Object>>();
 		Connection con=getCon();
 		PreparedStatement pstm = null;
 		//鏌ヨ寰楀埌缁撴灉闆�
@@ -152,25 +139,11 @@ public class DBHelper {
 			}
 			
 			//寮�濮嬪鐞嗘暟鎹�   寰幆rs锛屽彇鍑烘瘡涓�鍒楃殑鏁版嵁锛屽瓨鍒癕ap涓紝鍐嶆妸Map瀛樺埌List涓�
-			String ctypename="";
 			while(rs.next()){
-				Map<String,String> map=new HashMap<String,String>();
+				Map<String,Object> map=new HashMap<String,Object>();
 				//鏍规嵁鍒楀悕鍙栧��
-				for(int i=0;i<columnName.length;i++){
-					String cn=columnName[i];	//寰楀埌鍒楀悕
-					//鏍规嵁鍒楀悕鍙栧��
-					ctypename=rs.getObject(cn).getClass().getName();
-					if("oracle.sql.BLOB".equals(ctypename)){
-						byte[] bytes = null;
-						Blob  blob=rs.getBlob(cn);
-						bytes = new byte[(int) blob.length()];
-						map.put(cn, bytes.toString());
-					}else{
-						String value=rs.getString(cn);
-						//鏈変簡閿拰鍊硷紝寮�濮嬪瓨Map
-						map.put(cn, value);
-					}
-					
+				for(String cn : columnName){
+					map.put(cn, rs.getObject(cn));
 				}
 				//寰幆瀹屾瘯锛屽瓨list
 				list.add(map);
@@ -186,7 +159,7 @@ public class DBHelper {
 	}
 	
 	
-	public <T> List<T> find(String sql,List<Object> params,Class<T> c){
+	public static <T> List<T> find(String sql,List<Object> params,Class<T> c){
 		List<T> list=new ArrayList<T>(); //瑕佽繑鍥炵殑缁撴灉鐨勯泦鍚�
 		Connection con=getCon(); //鑾峰彇杩炴帴
 		ResultSet rs;
@@ -264,17 +237,7 @@ public class DBHelper {
 				}
 				list.add(t);
 			}
-		} catch (SecurityException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		closeAll(rs, pstmt, con);
