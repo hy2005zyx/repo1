@@ -64,7 +64,7 @@ public class Test {
 		System.out.print("请输入您的收入: ");
 		double income = in.nextDouble();
 
-		System.out.print("请输入婚姻状态(s 单身/M 已婚): ");
+		System.out.print("请输入婚姻状态(S 单身 / M 已婚): ");
 		String input = in.next();
 		int status = 0;
 
