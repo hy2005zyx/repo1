@@ -16,13 +16,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DBHelper {
-	public static String URL = "jdbc:mysql://ly/teach?useUnicode=true&amp;characterEncoding=UTF-8";
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+/**
+ * 数据库操作助手类，实现上下文监听器接口，可加载数据库参数
+ * @author 廖彦
+ *
+ */
+public class DBHelper implements ServletContextListener {
+	public static String URL = "jdbc:mysql://ly/ycdb?useUnicode=true&amp;characterEncoding=UTF-8";
 	public static String USR = "root";
 	public static String PWD = "123";
 	public static String DRV = "com.mysql.jdbc.Driver";
 
 	static {
+		init();
+	}
+
+	private static void init() {
 		try {
 			Class.forName(DRV);
 		} catch (ClassNotFoundException e) {
@@ -43,7 +54,7 @@ public class DBHelper {
 
 	//3銆佸叧闂祫婧愶紝涔熷彲浠ュ皝瑁�
 	//			鎴戜滑鎬诲叡鏈変笁涓笢瑗胯鍏抽棴
-	public static void close( Connection con) {
+	public static void close(Connection con) {
 		try {
 			if (con != null) {
 				con.close();
@@ -63,17 +74,20 @@ public class DBHelper {
 	 * @throws IOException 
 	 * @throws SQLException 
 	 */
-	public static int doUpdate(String sql, Object...params) {
+	public static int doUpdate(String sql, Object... params) {
 		//鑾峰彇杩炴帴
 		Connection con = getCon();
 		//棰勫鐞�
 		PreparedStatement pstm = null;
 		try {
+			System.out.println("SQL:" + sql);
 			pstm = con.prepareStatement(sql);
 			//璁剧疆鍙傛暟
 			doParams(pstm, params);
 			//鎵цsql璇彞
-			return pstm.executeUpdate();
+			int rows = pstm.executeUpdate();
+			System.out.println("update rows " + rows);
+			return rows;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -83,15 +97,15 @@ public class DBHelper {
 
 	//璁剧疆鍙傛暟
 	@SuppressWarnings("unchecked")
-	public static void doParams(PreparedStatement pstm, Object...params) {
+	public static void doParams(PreparedStatement pstm, Object... params) {
 		//棣栧厛锛屽鏋滃弬鏁颁负null锛屽垯涓嶉渶瑕佽缃弬鏁�
 		try {
 			//灏唒arams涓殑鍙傛暟寰幆鍙栧嚭锛屼竴涓竴涓殑璁剧疆鍒皃stm閲岄潰鍘伙紝浣嗘槸娉ㄦ剰涓�涓嬫暟鎹被鍨�
 			int i = 1;
 			for (Object o : params) {
 				//如果是集合，则取出所有元素作为参数
-				if(o instanceof Collection) {
-					for(Object p : (Collection<Object>)o) {
+				if (o instanceof Collection) {
+					for (Object p : (Collection<Object>) o) {
 						pstm.setObject(i++, p);
 					}
 				} else {
@@ -112,13 +126,14 @@ public class DBHelper {
 	 * @throws IOException 
 	 * @throws SQLException 
 	 */
-	public static List<Map<String, Object>> findAll(String sql, Object...params) {
+	public static List<Map<String, Object>> findAll(String sql, Object... params) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Connection con = getCon();
 		PreparedStatement pstm = null;
 		//鏌ヨ寰楀埌缁撴灉闆�
 		ResultSet rs = null;
 		try {
+			System.out.println("SQL:" + sql);
 			pstm = con.prepareStatement(sql);
 			doParams(pstm, params);
 			rs = pstm.executeQuery();
@@ -151,13 +166,14 @@ public class DBHelper {
 		return list;
 	}
 
-	public static <T> List<T> find(String sql, List<Object> params, Class<T> c) {
+	public static <T> List<T> find(String sql, Class<T> c, Object... params) {
 		List<T> list = new ArrayList<T>(); //瑕佽繑鍥炵殑缁撴灉鐨勯泦鍚�
 		Connection con = getCon(); //鑾峰彇杩炴帴
 		ResultSet rs;
 		PreparedStatement pstmt;
 
 		try {
+			System.out.println("SQL:" + sql);
 			pstmt = con.prepareStatement(sql); //棰勭紪璇戝璞�
 			doParams(pstmt, params); //璁剧疆鍗犱綅绗�
 			rs = pstmt.executeQuery(); //鎵ц鏌ヨ璇彞锛屽緱鍒扮粨鏋滈泦
@@ -173,41 +189,55 @@ public class DBHelper {
 			T t;
 			String mname = null; //鏂规硶鍚�
 			String cname = null; //鍒楀悕
-			String ctypename = null; //绫诲瀷鍚�
 
 			while (rs.next()) {
 				t = (T) c.newInstance(); //鍒涘缓鍙嶅皠绫荤殑瀹炰緥鍖栧璞�    Product t=(Product)c.newInstance();
 				for (int i = 0; i < colnames.length; i++) {//寰幆鏂规硶鍚� ,鏍煎紡涓簊etXXXX鎴杇etXXX
+					//空值忽略
+					Object value = rs.getObject(colnames[i]);
+					if (value == null) {
+						continue;
+					}
 					cname = colnames[i]; //鍙栧嚭鍒楀悕骞跺湪鍓嶉潰鍔犱笂set  setXXX
 					cname = "set" + cname.substring(0, 1).toUpperCase() + cname.substring(1).toLowerCase();
 					if (ms != null && ms.length > 0) {
 						for (Method m : ms) {//寰幆鍒楀悕
 							mname = m.getName(); //鍙栧嚭鏂规硶鍚�
-
-							if (cname.equals(mname) && rs.getObject(colnames[i]) != null) {//鍒ゆ柇鏂规硶鍚嶅拰鍒楀悕鏄惁涓�鏍凤紝鐩稿悓鍒欐縺娲绘柟娉曪紝娉ㄥ叆鏁版嵁                           //鍙"set"+鏁版嵁鍒楀悕.equalsIgnoreCase锛堟柟娉曞悕锛夛紝鍒欐縺娲昏繖涓柟娉�
-								//setXXX(String str); setXXX(int num); 婵�娲诲搴旂殑鏂规硶杩樺繀椤荤煡閬撳畠鐨勬暟鎹被鍨�
-								ctypename = rs.getObject(colnames[i]).getClass().getName();//鑾峰彇褰撳墠鍒楃殑绫诲瀷鍚�
-								if ("java.lang.Integer".equals(ctypename)) {
-									m.invoke(t, rs.getInt(colnames[i])); //obj.setXX(xx);
-								} else if ("java.lang.String".equals(ctypename)) {
-									m.invoke(t, rs.getString(colnames[i]));
-								} else if ("java.math.BigInteger".equals(ctypename)) {
+							if (cname.equals(mname)) {//鍒ゆ柇鏂规硶鍚嶅拰鍒楀悕鏄惁涓�鏍凤紝鐩稿悓鍒欐縺娲绘柟娉曪紝娉ㄥ叆鏁版嵁                           //鍙"set"+鏁版嵁鍒楀悕.equalsIgnoreCase锛堟柟娉曞悕锛夛紝鍒欐縺娲昏繖涓柟娉�
+								Class<?> cls = m.getParameterTypes()[0];
+								String clsName = cls.getSimpleName().toLowerCase();
+								switch (clsName) {
+								case "byte":
+									m.invoke(t, rs.getByte(colnames[i]));
+									break;
+								case "short":
+									m.invoke(t, rs.getShort(colnames[i]));
+									break;
+								case "integer":
+									m.invoke(t, rs.getInt(colnames[i]));
+									break;
+								case "long":
+									m.invoke(t, rs.getLong(colnames[i]));
+									break;
+								case "float":
+									m.invoke(t, rs.getFloat(colnames[i]));
+									break;
+								case "double":
 									m.invoke(t, rs.getDouble(colnames[i]));
-								} else if ("java.math.BigDecimal".equals(ctypename)) {
-									try {
-										m.invoke(t, rs.getInt(colnames[i]));
-									} catch (Exception e1) {
-										m.invoke(t, rs.getDouble(colnames[i]));
-									}
-								} else if ("java.sql.Timestamp".equals(ctypename)) {
+									break;
+								case "string":
 									m.invoke(t, rs.getString(colnames[i]));
-								} else if ("java.sql.Date".equals(ctypename)) {
-									m.invoke(t, rs.getString(colnames[i]));
-								} else if ("java.sql.Time".equals(ctypename)) {
-									m.invoke(t, rs.getString(colnames[i]));
-								} else if ("image".equals(ctypename)) {
-									m.invoke(t, rs.getBlob(colnames[i]));
-								} else if ("oracle.sql.BLOB".equals(ctypename)) {
+									break;
+								case "boolean":
+									m.invoke(t, rs.getBoolean(colnames[i]));
+									break;
+								case "date":
+									m.invoke(t, rs.getDate(colnames[i]));
+									break;
+								case "timestamp":
+									m.invoke(t, rs.getTimestamp(colnames[i]));
+									break;
+								case "byte[]":
 									BufferedInputStream is = null;
 									byte[] bytes = null;
 									Blob blob = rs.getBlob(colnames[i]);
@@ -219,8 +249,10 @@ public class DBHelper {
 										e.printStackTrace();
 									}
 									m.invoke(t, bytes);
-								} else {
-									m.invoke(t, rs.getString(colnames[i]));
+									break;
+								default:
+									System.out.println("未知类型：" + clsName + "===>" + value + "，听天由命了！");
+									m.invoke(t, value);
 								}
 								break;
 							}
@@ -234,7 +266,24 @@ public class DBHelper {
 		} finally {
 			close(con);
 		}
+		System.out.println("select rows " + list.size());
 		return list;
 	}
-	
+
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
+		//从上下文初始化参数中加载连接参数
+		String driver = sce.getServletContext().getInitParameter("dbDriver");
+		if (driver != null) {
+			DRV = driver;
+			URL = sce.getServletContext().getInitParameter("dbUrl");
+			USR = sce.getServletContext().getInitParameter("dbUser");
+			PWD = sce.getServletContext().getInitParameter("dbPwd");
+		}
+	}
+
 }

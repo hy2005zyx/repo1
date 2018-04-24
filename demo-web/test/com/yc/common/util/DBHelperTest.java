@@ -1,15 +1,16 @@
 package com.yc.common.util;
 
+import java.util.Date;
+
 import com.yc.bean.User;
-import com.yc.demo.cotroller.DBHelper;
 
 public class DBHelperTest {
 
 	public static void main(String[] args) {
-		DBHelper dbh = new DBHelper();
-		dbh.doUpdate("insert into user (name) values ('111')", null);
-		System.out.println(dbh.find("select * from user", null, User.class));
-		
+		DBHelper.doUpdate("insert into user (name,pwd,email,tel,sex,birthday) values (?,?,?,?,?,?)", 
+				"test", "123", "111@qq.com", "123456", 1, new Date());
+		System.out.println(DBHelper.find("select * from user", User.class));
+
 	}
 
 }
