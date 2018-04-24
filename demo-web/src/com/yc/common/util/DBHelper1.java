@@ -17,13 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DBHelper {
+import com.mysql.jdbc.NonRegisteringDriver;
+
+public class DBHelper1 {
 	public static String URL = "jdbc:mysql://ly/teach?useUnicode=true&amp;characterEncoding=UTF-8";
 	public static String USR = "root";
 	public static String PWD = "123";
 	public static String DRV = "com.mysql.jdbc.Driver";
 
 	static {
+		//NonRegisteringDriver.USER_PROPERTY_KEY;
 		try {
 			Class.forName(DRV);
 		} catch (ClassNotFoundException e) {
