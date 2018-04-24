@@ -10,23 +10,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mysql.jdbc.NonRegisteringDriver;
-
-public class DBHelper1 {
+public class DBHelper {
 	public static String URL = "jdbc:mysql://ly/teach?useUnicode=true&amp;characterEncoding=UTF-8";
 	public static String USR = "root";
 	public static String PWD = "123";
 	public static String DRV = "com.mysql.jdbc.Driver";
 
 	static {
-		//NonRegisteringDriver.USER_PROPERTY_KEY;
 		try {
 			Class.forName(DRV);
 		} catch (ClassNotFoundException e) {
@@ -47,19 +43,13 @@ public class DBHelper1 {
 
 	//3銆佸叧闂祫婧愶紝涔熷彲浠ュ皝瑁�
 	//			鎴戜滑鎬诲叡鏈変笁涓笢瑗胯鍏抽棴
-	public static void closeAll(ResultSet rs, Statement stmt, Connection con) {
+	public static void close( Connection con) {
 		try {
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
 			if (con != null) {
 				con.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -73,9 +63,7 @@ public class DBHelper1 {
 	 * @throws IOException 
 	 * @throws SQLException 
 	 */
-	public static int doUpdate(String sql, List<Object> params) {
-		//瀹氫箟杩斿洖鍊�
-		int result = -1;
+	public static int doUpdate(String sql, Object...params) {
 		//鑾峰彇杩炴帴
 		Connection con = getCon();
 		//棰勫鐞�
@@ -85,29 +73,33 @@ public class DBHelper1 {
 			//璁剧疆鍙傛暟
 			doParams(pstm, params);
 			//鎵цsql璇彞
-			result = pstm.executeUpdate();
+			return pstm.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			close(con);
 		}
-		closeAll(null, pstm, con);
-		return result;
 	}
 
 	//璁剧疆鍙傛暟
-	public static void doParams(PreparedStatement pstm, List<Object> params) {
+	@SuppressWarnings("unchecked")
+	public static void doParams(PreparedStatement pstm, Object...params) {
 		//棣栧厛锛屽鏋滃弬鏁颁负null锛屽垯涓嶉渶瑕佽缃弬鏁�
 		try {
-			if (pstm != null && params != null && params.size() > 0) {
-				//灏唒arams涓殑鍙傛暟寰幆鍙栧嚭锛屼竴涓竴涓殑璁剧疆鍒皃stm閲岄潰鍘伙紝浣嗘槸娉ㄦ剰涓�涓嬫暟鎹被鍨�
-				for (int i = 0; i < params.size(); i++) {
-					Object o = params.get(i);
-					pstm.setObject(i + 1, o);
+			//灏唒arams涓殑鍙傛暟寰幆鍙栧嚭锛屼竴涓竴涓殑璁剧疆鍒皃stm閲岄潰鍘伙紝浣嗘槸娉ㄦ剰涓�涓嬫暟鎹被鍨�
+			int i = 1;
+			for (Object o : params) {
+				//如果是集合，则取出所有元素作为参数
+				if(o instanceof Collection) {
+					for(Object p : (Collection<Object>)o) {
+						pstm.setObject(i++, p);
+					}
+				} else {
+					pstm.setObject(i++, o);
 				}
 			}
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -120,7 +112,7 @@ public class DBHelper1 {
 	 * @throws IOException 
 	 * @throws SQLException 
 	 */
-	public static List<Map<String, Object>> findAll(String sql, List<Object> params) {
+	public static List<Map<String, Object>> findAll(String sql, Object...params) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Connection con = getCon();
 		PreparedStatement pstm = null;
@@ -150,9 +142,9 @@ public class DBHelper1 {
 				list.add(map);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
-			closeAll(rs, pstm, con);
+			close(con);
 		}
 
 		//杩斿洖鏁版嵁
@@ -239,13 +231,10 @@ public class DBHelper1 {
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		} finally {
+			close(con);
 		}
-		closeAll(rs, pstmt, con);
 		return list;
 	}
-
-	public static List<?> findByArray(String sql, Object... params) {
-		return findAll(sql, Arrays.asList(params));
-	}
-
+	
 }

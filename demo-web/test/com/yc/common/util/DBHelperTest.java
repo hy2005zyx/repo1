@@ -1,7 +1,7 @@
 package com.yc.common.util;
 
 import com.yc.bean.User;
-import com.yc.dao.DBHelper;
+import com.yc.demo.cotroller.DBHelper;
 
 public class DBHelperTest {
 
