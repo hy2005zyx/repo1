@@ -6,7 +6,7 @@
 	<short-name>mt</short-name>
 	<tag>
 		<name>fmtDate</name>
-		<tag-class>com.yc.common.tag.DateTag</tag-class>
+		<tag-class>com.yc.teach.common.tag.DateTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>date</name>
@@ -20,7 +20,7 @@
 	</tag>
 	<tag>
 		<name>selectBox</name>
-		<tag-class>com.yc.common.tag.SelectBoxTag</tag-class>
+		<tag-class>com.yc.teach.common.tag.SelectBoxTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>items</name>
