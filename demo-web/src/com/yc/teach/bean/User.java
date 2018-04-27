@@ -1,4 +1,4 @@
-package com.yc.bean;
+package com.yc.teach.bean;
 
 import java.sql.Date;
 

@@ -1,4 +1,4 @@
-package com.yc.common.util;
+package com.yc.teach.common.util;
 
 import java.io.IOException;
 import java.sql.SQLException;

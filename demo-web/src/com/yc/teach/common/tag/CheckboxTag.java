@@ -1,4 +1,4 @@
-package com.yc.common.tag;
+package com.yc.teach.common.tag;
 
 import java.io.IOException;
 
