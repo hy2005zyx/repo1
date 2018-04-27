@@ -58,11 +58,11 @@ public class J {
 		System.out.println("星期日\t星期一\t星期二\t星期三\t星期四\t星期五\t星期六");
 		for(int i=0;i<week;i++)
 		{	
-			System.out.print("\t\t");
+			System.out.print("\t");
 		}
 			for(int w=1;w<=days;w++)
 			{	
-				System.out.print(w+"\t\t");
+				System.out.print(w+"\t");
 					if(week%7==6)
 						System.out.println();
 					week++;
