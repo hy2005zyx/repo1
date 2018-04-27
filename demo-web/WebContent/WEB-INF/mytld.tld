@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
 	<tlib-version>1.0</tlib-version>
 	<short-name>mt</short-name>
+
+	<!-- 格式化日期的标签 -->
 	<tag>
 		<name>fmtDate</name>
 		<tag-class>com.yc.teach.common.tag.DateTag</tag-class>
@@ -18,6 +20,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<!-- 生成单选框、复选框的标签 -->
 	<tag>
 		<name>selectBox</name>
 		<tag-class>com.yc.teach.common.tag.SelectBoxTag</tag-class>
@@ -44,4 +47,28 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
+	<!-- 分页标签 -->
+	<tag>
+		<name>page</name>
+		<tag-class>com.yc.teach.common.tag.PageTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>href</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>total</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Integer</type>
+		</attribute>
+		<attribute>
+			<name>size</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.Integer</type>
+		</attribute>
+	</tag>
+
 </taglib>

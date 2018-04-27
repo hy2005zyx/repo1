@@ -19,6 +19,6 @@ pageContext.setAttribute("list", DBHelper.find("select * from user",User.class))
 <body>
 	<mt:selectBox items="1:一,2:A,3:B,4:C,5:E"/><br>
 	<mt:fmtDate date="${now}" fmt="yyyy-MM-dd HH:mm:ss" /><br>
-	
+	<mt:page href="test.jsp" size="10" total="35"/>
 </body>
 </html>
