@@ -70,8 +70,9 @@ public class CalendarSunday {
 
 			/**
 			 * 计算输入的月份的1号是星期几
-			 * 注意：周日在第一列，下面码的写法
+			 * 注意：周日在第一列，下面码的写法，没算错的话，2018.4 的allDays = 43189
 			 */
+			//System.out.println(allDays);
 			int week = (allDays + 1) % 7;
 
 			System.out.println("=======================" + year + "年" + month + "月=====================");
