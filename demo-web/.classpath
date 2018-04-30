@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry excluding="com/yc/common/util/UploadUtil.java|com/yc/teach/common/util/UploadUtil.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_161">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
