@@ -3,7 +3,7 @@ package com.yc.common.util;
 import java.util.Date;
 
 import com.yc.teach.bean.User;
-import com.yc.teach.common.util.DBHelper;
+import com.yc.teach.util.DBHelper;
 
 public class DBHelperTest {
 

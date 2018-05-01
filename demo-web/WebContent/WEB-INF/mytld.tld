@@ -8,7 +8,7 @@
 	<!-- 格式化日期的标签 -->
 	<tag>
 		<name>fmtDate</name>
-		<tag-class>com.yc.teach.common.tag.DateTag</tag-class>
+		<tag-class>com.yc.teach.tag.DateTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>date</name>
@@ -23,7 +23,7 @@
 	<!-- 生成单选框、复选框的标签 -->
 	<tag>
 		<name>selectBox</name>
-		<tag-class>com.yc.teach.common.tag.SelectBoxTag</tag-class>
+		<tag-class>com.yc.teach.tag.SelectBoxTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>items</name>
@@ -51,7 +51,7 @@
 	<!-- 分页标签 -->
 	<tag>
 		<name>page</name>
-		<tag-class>com.yc.teach.common.tag.PageTag</tag-class>
+		<tag-class>com.yc.teach.tag.PageTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<name>href</name>

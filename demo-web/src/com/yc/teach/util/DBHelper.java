@@ -1,4 +1,4 @@
-package com.yc.teach.common.util;
+package com.yc.teach.util;
 
 import java.io.BufferedInputStream;
 import java.lang.reflect.Method;
