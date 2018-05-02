@@ -1,4 +1,4 @@
-package com.yc.teach.common.util;
+package com.yc.teach.util;
 
 import java.io.BufferedInputStream;
 import java.lang.reflect.Method;
@@ -23,7 +23,7 @@ import javax.servlet.ServletContextListener;
  *
  */
 public class DBHelper implements ServletContextListener {
-	public static String URL = "jdbc:mysql://ly/ycdb?useUnicode=true&amp;characterEncoding=UTF-8";
+	public static String URL = "jdbc:mysql://ly/ycdb?useUnicode=true;characterEncoding=UTF-8";
 	public static String USR = "root";
 	public static String PWD = "123";
 	public static String DRV = "com.mysql.jdbc.Driver";

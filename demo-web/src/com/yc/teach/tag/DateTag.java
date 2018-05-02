@@ -1,4 +1,4 @@
-package com.yc.teach.common.tag;
+package com.yc.teach.tag;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

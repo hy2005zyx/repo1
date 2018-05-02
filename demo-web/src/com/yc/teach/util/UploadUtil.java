@@ -1,4 +1,4 @@
-package com.yc.teach.common.util;
+package com.yc.teach.util;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -63,7 +63,7 @@ public class UploadUtil {
 		su.upload();
 		// 从su中取出封装request
 		Request request = su.getRequest(); // 注意这个reqeust请求对象是smartupload提供
-		Enumeration et=request.getParameterNames(); //获取请求中的所有表单元素信息
+		Enumeration<?> et=request.getParameterNames(); //获取请求中的所有表单元素信息
 		String str;
 		//保存值   先取出数据，表单传过来的
 		while(et.hasMoreElements()){
@@ -74,6 +74,7 @@ public class UploadUtil {
 			//得到上传的文件
 			Files fs = su.getFiles();
 			//得到文件的所有信息
+			@SuppressWarnings("unchecked")
 			Collection<File> col = fs.getCollection();
 			String fname;
 			String picPath="";

@@ -1,5 +1,5 @@
 <%@page import="com.yc.teach.bean.User"%>
-<%@page import="com.yc.teach.common.util.DBHelper"%>
+<%@page import="com.yc.teach.util.DBHelper"%>
 <%@page import="java.util.Date"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ taglib uri="/WEB-INF/mytld.tld" prefix="mt"%>
