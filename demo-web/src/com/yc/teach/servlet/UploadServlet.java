@@ -1,5 +1,7 @@
 package com.yc.teach.servlet;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -18,7 +20,14 @@ public class UploadServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		EasyUpload.upload("d:/", request);
+		String[] f = EasyUpload.upload("d:/", request);
+		FileReader fr = new FileReader(f[0]);
+		BufferedReader br = new BufferedReader(fr);
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			System.out.println(line);
+		}
+		br.close();
 		response.getWriter().print("upload success!");
 	}
 
