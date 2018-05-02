@@ -14,19 +14,27 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.sql.DataSource;
+
 /**
  * 数据库操作助手类，实现上下文监听器接口，可加载数据库参数
  * @author 廖彦
  *
  */
 public class DBHelper implements ServletContextListener {
-	public static String URL = "jdbc:mysql://ly/ycdb?useUnicode=true;characterEncoding=UTF-8";
+	public static String URL = "jdbc:mysql://ly/ycdb?useUnicode=true&characterEncoding=UTF-8";
 	public static String USR = "root";
 	public static String PWD = "123";
 	public static String DRV = "com.mysql.jdbc.Driver";
+
+	private static Context ctx;
+	private static DataSource ds;
 
 	static {
 		init();
@@ -34,18 +42,41 @@ public class DBHelper implements ServletContextListener {
 
 	private static void init() {
 		try {
-			Class.forName(DRV);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
+			//优先使用 JNDI 数据源
+			ctx = new InitialContext();
+			ds = (DataSource) ctx.lookup("java:comp/env/mysql/ycdb");
+			System.out.println("==============使用JNDI数据源==============");
+		} catch (Exception e) {
+			e.printStackTrace();
+			ResourceBundle bundle = ResourceBundle.getBundle("db");
+			DRV = bundle.getString("driverClassName");
+			URL = bundle.getString("url");
+			USR = bundle.getString("user");
+			PWD = bundle.getString("password");
+			try {
+				Class.forName(DRV);
+				System.out.println("==============使用项目数据源==============");
+			} catch (ClassNotFoundException ex) {
+				throw new RuntimeException(ex);
+			}
 		}
 	}
 
 	public static Connection getCon() {
 		Connection con = null;
+		//优先使用 JNDI 数据源
+		try {
+			if(ds != null) {
+				con = ds.getConnection();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//其次使用项目数据源
 		try {
 			con = DriverManager.getConnection(URL, USR, PWD);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
 		return con;
 	}
@@ -78,7 +109,6 @@ public class DBHelper implements ServletContextListener {
 		}
 	}
 
-
 	@SuppressWarnings("unchecked")
 	public static void doParams(PreparedStatement pstm, Object... params) {
 		try {
@@ -99,7 +129,8 @@ public class DBHelper implements ServletContextListener {
 		}
 	}
 
-	public static List<Map<String, Object>> findAll(String sql, Object... params) {
+	public static List<Map<String, Object>> findAll(String sql,
+			Object... params) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Connection con = getCon();
 		PreparedStatement pstm = null;
@@ -135,18 +166,18 @@ public class DBHelper implements ServletContextListener {
 
 	public static <T> List<T> find(String sql, Class<T> c, Object... params) {
 		List<T> list = new ArrayList<T>();
-		Connection con = getCon(); 
+		Connection con = getCon();
 		ResultSet rs;
 		PreparedStatement pstmt;
 
 		try {
 			System.out.println("SQL:" + sql);
-			pstmt = con.prepareStatement(sql); 
-			doParams(pstmt, params); 
-			rs = pstmt.executeQuery(); 
+			pstmt = con.prepareStatement(sql);
+			doParams(pstmt, params);
+			rs = pstmt.executeQuery();
 
 			Method[] ms = c.getMethods();
-			ResultSetMetaData md = rs.getMetaData(); 
+			ResultSetMetaData md = rs.getMetaData();
 
 			String[] colnames = new String[md.getColumnCount()];
 			for (int i = 0; i < colnames.length; i++) {
@@ -154,8 +185,8 @@ public class DBHelper implements ServletContextListener {
 			}
 
 			T t;
-			String mname = null; 
-			String cname = null; 
+			String mname = null;
+			String cname = null;
 
 			while (rs.next()) {
 				t = (T) c.newInstance();
@@ -166,13 +197,15 @@ public class DBHelper implements ServletContextListener {
 						continue;
 					}
 					cname = colnames[i];
-					cname = "set" + cname.substring(0, 1).toUpperCase() + cname.substring(1).toLowerCase();
+					cname = "set" + cname.substring(0, 1).toUpperCase()
+							+ cname.substring(1).toLowerCase();
 					if (ms != null && ms.length > 0) {
 						for (Method m : ms) {
-							mname = m.getName(); 
+							mname = m.getName();
 							if (cname.equals(mname)) {
 								Class<?> cls = m.getParameterTypes()[0];
-								String clsName = cls.getSimpleName().toLowerCase();
+								String clsName = cls.getSimpleName()
+										.toLowerCase();
 								switch (clsName) {
 								case "byte":
 									m.invoke(t, rs.getByte(colnames[i]));
@@ -209,7 +242,8 @@ public class DBHelper implements ServletContextListener {
 									byte[] bytes = null;
 									Blob blob = rs.getBlob(colnames[i]);
 									try {
-										is = new BufferedInputStream(blob.getBinaryStream());
+										is = new BufferedInputStream(
+												blob.getBinaryStream());
 										bytes = new byte[(int) blob.length()];
 										is.read(bytes);
 									} catch (Exception e) {
@@ -218,7 +252,8 @@ public class DBHelper implements ServletContextListener {
 									m.invoke(t, bytes);
 									break;
 								default:
-									System.out.println("未知类型：" + clsName + "===>" + value + "，听天由命了！");
+									System.out.println("未知类型：" + clsName
+											+ "===>" + value + "，听天由命了！");
 									m.invoke(t, value);
 								}
 								break;
