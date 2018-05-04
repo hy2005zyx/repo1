@@ -1,5 +1,6 @@
 package com.yc.teach.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,15 @@ public class EasyUpload {
 		if (savePath.endsWith("/") == false) {
 			savePath += "/";
 		}
+		//创建目录
+		File dir = new File(savePath);
+		if(dir.exists() == false) {
+			dir.mkdirs();
+		}
 		List<String> ret = new ArrayList<String>();
 		for (Part p : request.getParts()) {
 			String filename = p.getSubmittedFileName();
-			if (filename.trim().isEmpty() == false) {
+			if (filename != null && filename.trim().isEmpty() == false) {
 				filename = savePath + filename;
 				p.write(filename);
 				System.out.println("上传文件保存至：" + filename);
