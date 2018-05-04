@@ -9,7 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import com.jspsmart.upload.File;
@@ -44,11 +47,20 @@ public class UploadUtil {
 	}
 	
 	//文件上传封装                                               因为su的实例化需要pageContext，这是属于网页的，因此我们传进来
-	public Map<String,String> uploadFiles(PageContext pagecontext) throws ServletException, IOException, SQLException, SmartUploadException{
+	/**
+	 * 初始化针对Servlet化的改造：新增参数
+	 */
+	public Map<String,String> uploadFiles(ServletConfig servletconfig, 
+			HttpServletRequest httpservletrequest, 
+			HttpServletResponse httpservletresponse) throws ServletException, IOException, SQLException, SmartUploadException{
 		SmartUpload su=new SmartUpload();
 		Map<String, String> params = new HashMap<String, String>();
 		//初始化
-		su.initialize(pagecontext);
+		/**
+		 * 初始化针对Servlet化的改造
+		 */
+		su.initialize(servletconfig, httpservletrequest, httpservletresponse);
+		//su.initialize(pagecontext);
 		//允许上传的文件类型
 		su.setAllowedFilesList(ALLOWED);
 		//禁止上传的文件类型
