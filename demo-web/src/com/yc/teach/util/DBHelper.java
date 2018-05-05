@@ -44,7 +44,7 @@ public class DBHelper implements ServletContextListener {
 		try {
 			//优先使用 JNDI 数据源
 			ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/mysql/ycdb");
+			ds = (DataSource) ctx.lookup("java:comp/env/sqlite/ycdb");
 			System.out.println("==============使用JNDI数据源==============");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -63,22 +63,20 @@ public class DBHelper implements ServletContextListener {
 	}
 
 	public static Connection getCon() {
-		Connection con = null;
 		//优先使用 JNDI 数据源
 		try {
 			if(ds != null) {
-				con = ds.getConnection();
+				return ds.getConnection();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		//其次使用项目数据源
 		try {
-			con = DriverManager.getConnection(URL, USR, PWD);
+			return DriverManager.getConnection(URL, USR, PWD);
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}
-		return con;
 	}
 
 	public static void close(Connection con) {
