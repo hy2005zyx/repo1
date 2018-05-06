@@ -3,7 +3,7 @@
 <html style="height: 100%">
 <head>
 <meta charset="utf-8">
-<title>测试主页</title>
+<title>主页</title>
 <style>
 header {
 	background-color: #eee;
@@ -42,16 +42,17 @@ iframe {
 </head>
 <body style="height: 100%; margin: 0">
 	<header>
-		欢迎来系统 <span style="float: right;"> </span>
+		欢迎来到彩票统计系统
+		<span style="float: right;">
+		<a href="${basePath}">退出</a>
+		</span>
 	</header>
 	<aside>
 		<ul>
-			<li><a href="login/back/login.jsp">AJAX用户登录</a></li>
-			<li><a href="ssq/jsp/index.jsp">双色球数据上传</a></li>
-			<li><a href="report/report.jsp">双色球图形报表</a></li>
-			<li><a href="queryUser.jsp">用户查询</a></li>
-			<li><a href="upload.jsp">文件上传</a></li>
-			<li><a href="test.jsp">测试页面</a></li>
+			<li><a href="#" onclick="contentFrame.src='../report.servlet?type=line'">销售金额变化折线图</a></li>
+			<li><a href="#" onclick="contentFrame.src='../report.servlet?type=bar'">头等奖数量变化柱状图</a></li>
+			<li><a href="#" onclick="contentFrame.src='pie-simple.html'">总年度季度销售金额饼图</a></li>
+			<li><a href="#" onclick="contentFrame.src='pie-simple.html'">饼图</a></li>
 		</ul>
 	</aside>
 	<article>

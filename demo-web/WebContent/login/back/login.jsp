@@ -32,7 +32,7 @@
 		//用户名校验
 		$("#rname").blur(function(){
 			if($(this).val()){
-				$.post("/web-demo/checkName.servlet",{name:$(this).val()},function(data){
+				$.post("${basePath}/checkName.servlet",{name:$(this).val()},function(data){
 					alert(data);
 				});
 			}
@@ -55,7 +55,7 @@
 
 	//ajax登录
 	function ajaxLogin(){
-		$.post("/web-demo/login.servlet",
+		$.post("${basePath}/login.servlet",
 				{
 					uname:$("#uname").val(),
 					pwd:$("#pwd").val(),
@@ -74,7 +74,7 @@
 
 	//刷新验证码
 	function refreshVcode(){
-		vcodeImg.src="/web-demo/vc.servlet?"+Math.random()
+		vcodeImg.src="${basePath}/vc.servlet?"+Math.random()
 	}
 		
 </script>
@@ -115,7 +115,7 @@
                             <div class="input-group">
                             	<label for="vcode" class="input-group-addon">验证码</label>
                                 <input type="text" class="form-control" name="vcode" id="vcode" required placeholder="请输入右边的验证码"/>
-                                <label class="input-group-btn"><img id="vcodeImg" src="/web-demo/vc.servlet" onclick='refreshVcode()' height="34px"></label>
+                                <label class="input-group-btn"><img id="vcodeImg" src="${basePath}/vc.servlet" onclick='refreshVcode()' height="34px"></label>
                             </div>
                             <br/>
                             <div class="input-group">

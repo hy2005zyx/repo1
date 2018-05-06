@@ -1,17 +1,24 @@
+<%@page import="com.yc.teach.bean.User"%>
+<%@page import="com.yc.teach.util.DBHelper"%>
 <%@page import="java.util.Date"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@ taglib uri="/WEB-INF/TestTld.tld" prefix="tt"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri="/WEB-INF/mytld.tld" prefix="mt"%>
+<%
+	Date date = new Date();
+	pageContext.setAttribute("now", date);
+%>
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>测试网页</title>
-</head>
+<meta charset="utf-8">
+<title>首页</title>
 <%
-	Date now = new Date();
-	pageContext.setAttribute("now", now);
+pageContext.setAttribute("list", DBHelper.find("select * from user",User.class));
 %>
+</head>
 <body>
-	<tt:date value="${now}" format="yyyy年MM月dd日"/>
+	<mt:selectBox items="1:一,2:A,3:B,4:C,5:E"/><br>
+	<mt:fmtDate date="${now}" fmt="yyyy-MM-dd HH:mm:ss" /><br>
+	<mt:page href="test.jsp" size="10" total="35"/>
 </body>
 </html>
