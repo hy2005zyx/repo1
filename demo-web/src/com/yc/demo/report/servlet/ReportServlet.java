@@ -20,16 +20,27 @@ public class ReportServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		/**
+		 * 获取参数
+		 */
 		String type = request.getParameter("type");
+		String year = request.getParameter("year");
+		String month = request.getParameter("month");
+		if (year == null) {
+			year = "2017";
+		}
+		if (month == null) {
+			month = "10";
+		}
 		switch (type) {
 		case "bar":
-			bar(request, response);
+			bar(request, response, year, month);
 			break;
 		case "line":
-			line(request, response);
+			line(request, response, year, month);
 			break;
 		case "pie":
-			pie(request, response);
+			pie(request, response, year, month);
 			break;
 		}
 
@@ -41,18 +52,8 @@ public class ReportServlet extends HttpServlet {
 	}
 
 	protected void line(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		/**
-		 * 获取参数
-		 */
-		String year = request.getParameter("year");
-		String month = request.getParameter("month");
-		if (year == null) {
-			year = "2017";
-		}
-		if (month == null) {
-			month = "10";
-		}
+			HttpServletResponse response, String year, String month)
+			throws ServletException, IOException {
 		/**
 		 * 查询数据
 		 */
@@ -82,23 +83,12 @@ public class ReportServlet extends HttpServlet {
 		 */
 		request.setAttribute("nameList", nameList);
 		request.setAttribute("valueList", valueList);
-		request.getRequestDispatcher("/report/line-simple.jsp")
-				.forward(request, response);
+		request.getRequestDispatcher("/report/line-simple.jsp").forward(request,
+				response);
 	}
-	
-	protected void bar(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		/**
-		 * 获取参数
-		 */
-		String year = request.getParameter("year");
-		String month = request.getParameter("month");
-		if (year == null) {
-			year = "2017";
-		}
-		if (month == null) {
-			month = "10";
-		}
+
+	protected void bar(HttpServletRequest request, HttpServletResponse response,
+			String year, String month) throws ServletException, IOException {
 		/**
 		 * 查询数据
 		 */
@@ -128,13 +118,35 @@ public class ReportServlet extends HttpServlet {
 		 */
 		request.setAttribute("nameList", nameList);
 		request.setAttribute("valueList", valueList);
-		request.getRequestDispatcher("/report/bar-simple.jsp")
-				.forward(request, response);
+		request.getRequestDispatcher("/report/bar-simple.jsp").forward(request,
+				response);
 	}
 
-	protected void pie(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void pie(HttpServletRequest request, HttpServletResponse response,
+			String year, String month) throws ServletException, IOException {
+		/**
+		 * 查询数据
+		 */
+		List<Map<String, Object>> list = biz.sumSaleByYear(year);
+		/**
+		 * 构建显示数据
+		 */
+		// 名称列表
+		List<String> nameList = new ArrayList<String>();
+		// 数值列表
+		List<Map<String, Object>> valueList = list;
 
+		for (Map<String, Object> m : list) {
+			// 添加名称
+			nameList.add((String) m.get("name"));
+		}
+		/**
+		 * 设置属性，向页面推送数据
+		 */
+		request.setAttribute("nameList", nameList);
+		request.setAttribute("valueList", valueList);
+		request.getRequestDispatcher("/report/pie-simple.jsp").forward(request,
+				response);
 	}
 
 }

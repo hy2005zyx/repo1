@@ -13,4 +13,8 @@ public class ReportBiz {
 		return dao.selectByMonth(year, month);
 	}
 
+	public List<Map<String, Object>> sumSaleByYear(String year) {
+		return dao.sumSaleByYear(year);
+	}
+
 }

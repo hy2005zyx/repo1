@@ -39,6 +39,14 @@ iframe {
 	border: 0px
 }
 </style>
+<script type="text/javascript">
+var desc = [
+	"请设计一个统计指定月份，在最近5年内的销售额变化的折线图",
+	"请设计一个统计指定年度，最高月销售额，最低月销售额，平均月销售额",
+	"请设计一个统计指定年度，各个季度的销售总额饼图",
+	"请设计一个统计指定年度，各个中奖号码出现的次数饼图"
+];
+</script>
 </head>
 <body style="height: 100%; margin: 0">
 	<header>
@@ -49,10 +57,14 @@ iframe {
 	</header>
 	<aside>
 		<ul>
-			<li><a href="#" onclick="contentFrame.src='../report.servlet?type=line'">销售金额变化折线图</a></li>
-			<li><a href="#" onclick="contentFrame.src='../report.servlet?type=bar'">头等奖数量变化柱状图</a></li>
-			<li><a href="#" onclick="contentFrame.src='pie-simple.html'">总年度季度销售金额饼图</a></li>
-			<li><a href="#" onclick="contentFrame.src='pie-simple.html'">饼图</a></li>
+			<li><a href="#" onclick="contentFrame.src='../report.servlet?type=line&year=2017&month=10'">销售金额变化折线图</a></li>
+			<li><a href="#" onclick="contentFrame.src='../report.servlet?type=bar&year=2017&month=10'">头等奖数量变化柱状图</a></li>
+			<li><a href="#" onclick="contentFrame.src='../report.servlet?type=pie&year=2017'">总年度销售金额饼图</a></li>
+			<li>-----下面是练习题-----</li>
+			<li><a href="#" onclick="contentFrame.src='execirse.jsp?desc='+desc[0]">历年指定月份销售额折线图？</a></li>
+			<li><a href="#" onclick="contentFrame.src='execirse.jsp?desc='+desc[1]">年度月销售数据对比柱状图？</a></li>
+			<li><a href="#" onclick="contentFrame.src='execirse.jsp?desc='+desc[2]">季度销售额统计饼图？</a></li>
+			<li><a href="#" onclick="contentFrame.src='execirse.jsp?desc='+desc[3]">中奖号码出现次数饼图？</a></li>
 		</ul>
 	</aside>
 	<article>

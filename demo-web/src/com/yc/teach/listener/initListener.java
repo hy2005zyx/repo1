@@ -16,6 +16,7 @@ public class initListener implements ServletContextListener {
     }
 
     public void contextInitialized(ServletContextEvent se)  { 
+    	System.out.println("工程初始化");
     	String basePath = se.getServletContext().getContextPath();
     	se.getServletContext().setAttribute("basePath", basePath);
     }
