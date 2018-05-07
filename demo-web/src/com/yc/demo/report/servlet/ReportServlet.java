@@ -51,6 +51,9 @@ public class ReportServlet extends HttpServlet {
 		doGet(request, response);
 	}
 
+	/**
+	 * 曲线图
+	 */
 	protected void line(HttpServletRequest request,
 			HttpServletResponse response, String year, String month)
 			throws ServletException, IOException {

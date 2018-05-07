@@ -8,17 +8,22 @@
 <body style="height: 100%; margin: 0">
 	<div id="formdiv" style="height: 5%">
 		<form action="${basePath }/report.servlet" method="post">
+		<!-- 报表类型参数 -->
 		<input name="type" value="line" type="hidden">
+		<!-- 生成年度下拉列表 -->
 		年度：<select name="year" style="height: 25px">
 			<c:forEach begin="2013" end="2017" var="y">
 				<option value="${y}" ${param.year==y?"selected":"" }>${y}年</option>
 			</c:forEach>
 		</select>
+		<!-- 生成月份下拉列表 -->
 		月份：<select name="month" style="height: 25px">
 			<c:forEach begin="1" end="12" var="m">
+				<!-- 将数字转换成 01、02 格式的字符串 -->
 				<c:set var="zero" value='0'></c:set>
 				<c:set var="mn" value='${zero.concat(m)}'></c:set>
 				<c:set var="mn" value='${mn.substring(mn.length()-2)}'></c:set>
+				<!-- 输出选项 -->
 				<option value='${mn}' ${param.month==mn?"selected":"" }>${mn}月</option>
 			</c:forEach>
 		</select>

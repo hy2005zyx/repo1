@@ -14,7 +14,6 @@ header {
 aside {
 	float: left;
 	width: 20%;
-	height: 400px;
 	background-color: #ccc;
 	height: 88%
 }
@@ -22,7 +21,6 @@ aside {
 article {
 	float: left;
 	width: 80%;
-	height: 400px;
 	background-color: #ddd;
 	height: 88%
 }
@@ -42,7 +40,7 @@ iframe {
 </head>
 <body style="height: 100%; margin: 0">
 	<header>
-		欢迎来系统 <span style="float: right;"> </span>
+		欢迎来演示系统 <span style="float: right;"> </span>
 	</header>
 	<aside>
 		<ul>
