@@ -8,12 +8,7 @@
 </head>
 <body>
 	<%
-		for (int i = 1; i < 10; i++) {
-			for (int j = 1; j <= i; j++) {
-				out.print(i + "*" + j + "=" + i * j+"\t");
-			}
-			out.print("<br>");
-		}
+		int i=1/0;
 	%>
 </body>
 </html>
