@@ -42,6 +42,18 @@ public class ReportServlet extends HttpServlet {
 		case "pie":
 			pie(request, response, year, month);
 			break;
+		case "1":
+			sumByOneMonth(request, response, year, month);
+			break;
+		case "2":
+			sumMonthByYear(request, response, year);
+			break;
+		case "3":
+			sumSeasonByYear(request, response, year);
+			break;
+		case "4":
+			countBollByYear(request, response, year);
+			break;
 		}
 
 	}
@@ -149,6 +161,120 @@ public class ReportServlet extends HttpServlet {
 		request.setAttribute("nameList", nameList);
 		request.setAttribute("valueList", valueList);
 		request.getRequestDispatcher("/report/pie-simple.jsp").forward(request,
+				response);
+	}
+	
+	private void countBollByYear(HttpServletRequest request,
+			HttpServletResponse response, String year) throws ServletException, IOException {
+		/**
+		 * 查询数据
+		 */
+		List<Map<String, Object>> list = biz.countBollByYear(year);
+		/**
+		 * 构建显示数据
+		 */
+		// 名称列表
+		List<String> nameList = new ArrayList<String>();
+		// 数值列表
+		List<Map<String, Object>> valueList = list;
+
+		for (Map<String, Object> m : list) {
+			// 添加名称
+			nameList.add((String) m.get("name"));
+		}
+		/**
+		 * 设置属性，向页面推送数据
+		 */
+		request.setAttribute("nameList", nameList);
+		request.setAttribute("valueList", valueList);
+		request.getRequestDispatcher("/report/pie-2.jsp").forward(request,
+				response);
+	}
+
+	private void sumSeasonByYear(HttpServletRequest request,
+			HttpServletResponse response, String year) throws ServletException, IOException {
+		/**
+		 * 查询数据
+		 */
+		List<Map<String, Object>> list = biz.sumSeasonByYear(year);
+		/**
+		 * 构建显示数据
+		 */
+		// 名称列表
+		List<String> nameList = new ArrayList<String>();
+		// 数值列表
+		List<Map<String, Object>> valueList = list;
+
+		for (Map<String, Object> m : list) {
+			// 添加名称
+			nameList.add((String) m.get("name"));
+		}
+		/**
+		 * 设置属性，向页面推送数据
+		 */
+		request.setAttribute("nameList", nameList);
+		request.setAttribute("valueList", valueList);
+		request.getRequestDispatcher("/report/pie-1.jsp").forward(request,
+				response);
+		
+	}
+
+	private void sumMonthByYear(HttpServletRequest request,
+			HttpServletResponse response, String year) throws ServletException, IOException {
+		/**
+		 * 查询数据
+		 */
+		List<Map<String, Object>> list = biz.sumMonthByYear(year);
+		/**
+		 * 构建显示数据
+		 */
+		// 名称列表
+		List<String> nameList = new ArrayList<String>();
+		// 数值列表
+		List<Object> valueList = new ArrayList<Object>();
+
+		for (Map<String, Object> m : list) {
+			// 添加名称
+			nameList.add((String) m.get("month"));
+			// 添加数值，由于该字段已经在sql语句中求和过了，就是数值类型，因此不用转型了
+			valueList.add(m.get("sale"));
+		}
+		/**
+		 * 设置属性，向页面推送数据
+		 */
+		request.setAttribute("nameList", nameList);
+		request.setAttribute("valueList", valueList);
+		request.getRequestDispatcher("/report/bar-1.jsp").forward(request,
+				response);
+		
+	}
+
+	private void sumByOneMonth(HttpServletRequest request,
+			HttpServletResponse response, String year, String month) throws ServletException, IOException {
+		/**
+		 * 查询数据
+		 */
+		List<Map<String, Object>> list = biz.sumByOneMonth(year, month);
+		/**
+		 * 构建显示数据
+		 */
+		// 名称列表
+		List<String> nameList = new ArrayList<String>();
+		// 数值列表
+		List<Object> valueList = new ArrayList<Object>();
+
+		for (Map<String, Object> m : list) {
+			// 添加名称
+			nameList.add((String) m.get("ym"));
+			// 添加数值，由于该字段已经在sql语句中求和过了，就是数值类型，因此不用转型了
+			valueList.add(m.get("sale"));
+		}
+		/**
+		 * 设置属性，向页面推送数据
+		 */
+		request.setAttribute("nameList", nameList);
+		request.setAttribute("valueList", valueList);
+		request.getRequestDispatcher("/report/line-1.jsp").forward(request,
 				response);
 	}
 

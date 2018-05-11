@@ -37,7 +37,7 @@ var dom = document.getElementById("container");
 var myChart = echarts.init(dom);
 option = {
 	    title : {
-	        text: '2017年10月 彩票销售金额变化折线图',
+	        text: '${param.year}年${param.month}月 彩票销售金额变化折线图',
 	        x:'center'
 	    },
     xAxis: {

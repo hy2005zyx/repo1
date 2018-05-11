@@ -8,7 +8,7 @@
 <body style="height: 100%; margin: 0">
 	<div id="formdiv" style="height: 5%">
 		<form action="${basePath }/report.servlet" method="post">
-		<input name="type" value="pie" type="hidden">
+		<input name="type" value="4" type="hidden">
 		年度：<select name="year" style="height: 25px">
 			<c:forEach begin="2013" end="2017" var="y">
 				<option value="${y}" ${param.year==y?"selected":"" }>${y}年</option>
@@ -24,7 +24,8 @@ var dom = document.getElementById("container");
 var myChart = echarts.init(dom);
 option = {
 	    title : {
-	        text: '${param.year}年月度销售量饼图',
+	        text: '${param.year}中奖号码出现次数饼图',
+	        subtext: "统计指定年度，各个中奖号码出现的次数的饼图",
 	        x:'center'
 	    },
 	    tooltip : {

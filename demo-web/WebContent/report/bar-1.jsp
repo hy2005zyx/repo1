@@ -8,7 +8,7 @@
 <body style="height: 100%; margin: 0">
 	<div id="formdiv" style="height: 5%">
 		<form action="${basePath }/report.servlet" method="post">
-		<input name="type" value="pie" type="hidden">
+		<input name="type" value="2" type="hidden">
 		年度：<select name="year" style="height: 25px">
 			<c:forEach begin="2013" end="2017" var="y">
 				<option value="${y}" ${param.year==y?"selected":"" }>${y}年</option>
@@ -22,29 +22,39 @@
 	<script type="text/javascript">
 var dom = document.getElementById("container");
 var myChart = echarts.init(dom);
+
 option = {
+		color: ['#3398DB'],
+	    tooltip : {
+	        trigger: 'axis',
+	        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+	            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+	        }
+	    },
+	    grid: {
+	        left: '3%',
+	        right: '4%',
+	        bottom: '3%',
+	        containLabel: true
+	    },
 	    title : {
-	        text: '${param.year}年月度销售量饼图',
+	        text: '${param.year}年月销售数据对比柱状图',
+	        subtext: "统计指定年度，最高月销售额，最低月销售额，平均月销售额的柱状图",
 	        x:'center'
 	    },
-	    tooltip : {
-	        trigger: 'item',
-	        formatter: "{a} <br/>{b} : {c} ({d}%)"
-	    },
-	    legend: {
-	        orient: 'vertical',
-	        left: 'left',
-	        data: ${nameList}
-	    },
-	    series : [
-	        {
-	            name: '访问来源',
-	            type: 'pie',
-	            data:${valueList.toString().replaceAll("=",":")}
-	        }
-	    ]
-	};
-	myChart.setOption(option, true);
+    xAxis: {
+        type: 'category',
+        data: ${nameList}
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        data: ${valueList},
+        type: 'bar'
+    }]
+};
+myChart.setOption(option, true);
        </script>
 </body>
 </html>

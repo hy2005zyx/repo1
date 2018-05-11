@@ -116,9 +116,11 @@ public class DBHelper implements ServletContextListener {
 				//不确定的参数类型，直接使用setObject，让jdbc去转型
 				if (o instanceof Collection) {
 					for (Object p : (Collection<Object>) o) {
+						System.out.println("参数"+i+"："+p);
 						pstm.setObject(i++, p);
 					}
 				} else {
+					System.out.println("参数"+i+"："+o);
 					pstm.setObject(i++, o);
 				}
 			}
@@ -153,6 +155,7 @@ public class DBHelper implements ServletContextListener {
 
 				list.add(map);
 			}
+			System.out.println("select rows " + list.size());
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
