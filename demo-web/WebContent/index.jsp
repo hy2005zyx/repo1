@@ -49,6 +49,7 @@ iframe {
 			<li><a href="report/report.jsp">双色球图形报表</a></li>
 			<li><a href="queryUser.jsp">用户查询</a></li>
 			<li><a href="upload.jsp">文件上传</a></li>
+			<li><a href="eui.jsp">EasyUI</a></li>
 			<li><a href="test.jsp">测试页面</a></li>
 		</ul>
 	</aside>

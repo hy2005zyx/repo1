@@ -7,8 +7,6 @@
 <title>首页</title>
 </head>
 <body>
-	<%
-		int i=1/0;
-	%>
+测试页面
 </body>
 </html>
