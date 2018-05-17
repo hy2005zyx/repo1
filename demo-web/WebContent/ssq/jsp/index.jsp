@@ -3,7 +3,7 @@
 
 
 
-<form action="back/doUploadSsq.jsp" method="post" enctype="multipart/form-data">
+<form action="${basePath }/ssq/jsp/back/doUploadSsq.jsp" method="post" enctype="multipart/form-data">
 	双色球中奖信息:
 	<input type="file" name="ssq" />
 	<br />
@@ -12,5 +12,5 @@
 
 
 
-<a href="back/doLottery.jsp">点击查看双色球</a>
+<a href="${basePath }/ssq/jsp/back/doLottery.jsp">点击查看双色球</a>
 <%@ include file="bottom.jsp"%>

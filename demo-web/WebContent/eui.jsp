@@ -35,21 +35,35 @@ li {
 #demo li * {
 	vertical-align: middle;
 }
-.easyui-linkbutton{
+
+.easyui-linkbutton {
 	margin-top: 3px
 }
 </style>
 <script type="text/javascript">
-	function addTab(titleName, url) {
-		var t = $('#tabs');
-		if (!t.tabs("getTab", titleName)) {
-			t.tabs('add', {
-				title : titleName,
-				closable : true,
-				href : url
+	/** 动态添加tab，使用iframe显示内容 **/
+	function addTab(title, href, icon) {
+		var tt = $('#tabs');
+		if (tt.tabs('exists', title)) {//如果tab已经存在,则选中并刷新该tab            
+			tt.tabs('select', title);
+			refreshTab({
+				tabTitle : title,
+				url : href
 			});
 		} else {
-			t.tabs('select', titleName);
+			var content;
+			if (href) {
+				content = '<iframe scrolling="no" frameborder="0"  src="'
+						+ href + '" style="width:100%;height:100%;"></iframe>';
+			} else {
+				content = '未实现';
+			}
+			tt.tabs('add', {
+				title : title,
+				closable : true,
+				content : content,
+				iconCls : icon || 'icon-search'
+			});
 		}
 	}
 </script>
@@ -74,10 +88,10 @@ li {
 			</table>
 		</div>
 		<div class="easyui-accordion" data-options="region:'west',split:true" title="菜单" style="width: 200px;">
-			<div title="销售管理">
-				<a href="#" class="easyui-linkbutton" onclick="addTab('测试页面','${basePath }/test.jsp')" data-options="iconCls:'icon-search'" style="width: 100%">测试页面</a>
-				<a href="#" class="easyui-linkbutton" onclick="addTab('文件上传','${basePath }/upload.jsp')" data-options="iconCls:'icon-print'" style="width: 100%">文件上传</a>
-				<a href="#" class="easyui-linkbutton" onclick="addTab('用户管理','${basePath }/queryUser.jsp')" data-options="iconCls:'icon-reload'" style="width: 100%">用户管理</a>
+			<div title="项目案例">
+				<a href="#" class="easyui-linkbutton" onclick="addTab('AJAX用户登录','${basePath }/login/back/login.jsp')" data-options="iconCls:'icon-search'" style="width: 100%">AJAX用户登录</a>
+				<a href="#" class="easyui-linkbutton" onclick="addTab('双色球数据上传','${basePath }/ssq/jsp/index.jsp')" data-options="iconCls:'icon-print'" style="width: 100%">双色球数据上传</a>
+				<a href="#" class="easyui-linkbutton" onclick="addTab('双色球图形报表','${basePath }/report/report.jsp')" data-options="iconCls:'icon-reload'" style="width: 100%">双色球图形报表</a>
 			</div>
 			<div title="系统管理">
 				<a href="#" class="easyui-linkbutton" onclick="addTab('测试页面','${basePath }/test.jsp')" data-options="iconCls:'icon-search'" style="width: 100%">测试页面</a>
@@ -115,7 +129,7 @@ li {
 					</ol>
 				</details>
 				<details>
-					<summary style="font-size: 20px"> 四、EasyUI的使用方法： </summary>
+					<summary style="font-size: 20px"> 四、EasyUI的使用方法 </summary>
 					<ol>
 						<li><details open>
 								<summary>导入资源（注意导入顺序，jQuery应该先于EasyUI导入）</summary>
@@ -159,7 +173,7 @@ li {
 						<li><span> layout 布局：</span><span>请访问官网</span></li>
 						<li><span> accordion 分类（手风琴）：</span><span>请访问官网</span></li>
 						<li><span style="color: red"> linkbutton 按钮：</span><span>请访问官网</span></li>
-						<li><span> tabs 选项卡：</span><span>请访问官网</span></li>
+						<li><span> tabs 选项卡：</span><span>请访问官网（注意：easyui 的 tabs 使用不方便，要做改造）</span></li>
 						<li><span> pagination 分页：</span><span>请访问官网</span></li>
 						<li><span> progressbar 进度条：</span><span>请访问官网</span></li>
 						<li><span> window 窗口：</span><span>请访问官网</span></li>

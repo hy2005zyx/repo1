@@ -6,10 +6,10 @@
 <title>用户登录</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/login.css">
-<script src="../js/jquery-1.9.1.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="${basePath }/login/back/css/bootstrap.min.css">
+<link rel="stylesheet" href="${basePath }/login/back/css/login.css">
+<script src="${basePath }/login/js/jquery-1.9.1.js"></script>
+<script src="${basePath }/login/back/js/bootstrap.min.js"></script>
 <!--[if lt IE 9]>
 	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
     <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
@@ -63,7 +63,7 @@
 				},
 				function(data){
 					if(data == 'ok'){
-						location.href="manager/admin.html";
+						location.href="${basePath }/login/back/manager/admin.html";
 					} else {
 						alert(data);
 						refreshVcode();

@@ -56,10 +56,10 @@
 <br/><br/>
 <div>
 	共 <%=pb.getTotalpage() %>页 <%=pb.getTotal() %>条记录
-	<a href="back/doLottery.jsp?pages=1&pagesize=<%=pb.getPagesize()%>">首页</a>
-	<a href="back/doLottery.jsp?pages=<%=pb.getPrepage() %>&pagesize=<%=pagesize%>">上一页</a>
-	<a href="back/doLottery.jsp?pages=<%=pb.getNextpage() %>&pagesize=<%=pagesize%>">下一页</a>
-	<a href="back/doLottery.jsp?pages=<%=pb.getTotalpage() %>&pagesize=<%=pagesize%>">末页</a>
+	<a href="${basePath }/ssq/jsp/back/doLottery.jsp?pages=1&pagesize=<%=pb.getPagesize()%>">首页</a>
+	<a href="${basePath }/ssq/jsp/back/doLottery.jsp?pages=<%=pb.getPrepage() %>&pagesize=<%=pagesize%>">上一页</a>
+	<a href="${basePath }/ssq/jsp/back/doLottery.jsp?pages=<%=pb.getNextpage() %>&pagesize=<%=pagesize%>">下一页</a>
+	<a href="${basePath }/ssq/jsp/back/doLottery.jsp?pages=<%=pb.getTotalpage() %>&pagesize=<%=pagesize%>">末页</a>
 	当前第  <%=pb.getPages() %>页/每页<%=pb.getPagesize() %>
 	到 <input type="text" name="pages" value="10" onblur="gotopage(  this.value   )"/>页
 	
@@ -69,7 +69,7 @@
 
 <script>
 	function gotopage( pages ){
-		location.href="back/doLottery.jsp?pages="+pages;
+		location.href="${basePath }/ssq/back/doLottery.jsp?pages="+pages;
 	}
 </script>
 
