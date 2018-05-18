@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,6 +23,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
+
 /**
  * 数据库操作助手类，实现上下文监听器接口，可加载数据库参数
  * @author 廖彦
@@ -32,6 +35,8 @@ public class DBHelper implements ServletContextListener {
 	public static String USR = "root";
 	public static String PWD = "123";
 	public static String DRV = "com.mysql.jdbc.Driver";
+	
+	private static Logger logger = Logger.getLogger(DBHelper.class);
 
 	private static Context ctx;
 	private static DataSource ds;
@@ -44,28 +49,36 @@ public class DBHelper implements ServletContextListener {
 		try {
 			//优先使用 JNDI 数据源
 			ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/sqlite/ycdb");
-			System.out.println("==============使用JNDI数据源==============");
+			ds = (DataSource) ctx.lookup("java:comp/env/sqlite/dingcan1");
+			logger.debug("==============使用JNDI数据源==============");
 		} catch (Exception e) {
-			e.printStackTrace();
-			ResourceBundle bundle = ResourceBundle.getBundle("db");
-			DRV = bundle.getString("driverClassName");
-			URL = bundle.getString("url");
-			USR = bundle.getString("user");
-			PWD = bundle.getString("password");
+			logger.error(e.getMessage());
+			try {
+				// 从配置文件 db.properties 中读取数据库配置信息
+				ResourceBundle bundle = ResourceBundle.getBundle("db");
+				DRV = bundle.getString("driverClassName");
+				URL = bundle.getString("url");
+				USR = bundle.getString("user");
+				PWD = bundle.getString("password");
+				logger.debug("==============使用db.properties数据源==============");
+			} catch (Exception e1) {
+				logger.error(e.getMessage());
+				logger.debug("==============使用DBHelper内部数据源==============");
+			}
+			// 使用代码中的数据库配置（加载驱动必须保证会执行到）
 			try {
 				Class.forName(DRV);
-				System.out.println("==============使用项目数据源==============");
 			} catch (ClassNotFoundException ex) {
 				throw new RuntimeException(ex);
 			}
+
 		}
 	}
 
 	public static Connection getCon() {
 		//优先使用 JNDI 数据源
 		try {
-			if(ds != null) {
+			if (ds != null) {
 				return ds.getConnection();
 			}
 		} catch (Exception e) {
@@ -94,11 +107,11 @@ public class DBHelper implements ServletContextListener {
 		Connection con = getCon();
 		PreparedStatement pstm = null;
 		try {
-			System.out.println("SQL:" + sql);
+			logger.debug("SQL:" + sql);
 			pstm = con.prepareStatement(sql);
 			doParams(pstm, params);
 			int rows = pstm.executeUpdate();
-			System.out.println("update rows " + rows);
+			logger.debug("update rows " + rows);
 			return rows;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -116,11 +129,11 @@ public class DBHelper implements ServletContextListener {
 				//不确定的参数类型，直接使用setObject，让jdbc去转型
 				if (o instanceof Collection) {
 					for (Object p : (Collection<Object>) o) {
-						System.out.println("参数"+i+"："+p);
+						logger.debug("参数" + i + "：" + p);
 						pstm.setObject(i++, p);
 					}
 				} else {
-					System.out.println("参数"+i+"："+o);
+					logger.debug("参数" + i + "：" + o);
 					pstm.setObject(i++, o);
 				}
 			}
@@ -129,14 +142,13 @@ public class DBHelper implements ServletContextListener {
 		}
 	}
 
-	public static List<Map<String, Object>> findAll(String sql,
-			Object... params) {
+	public static List<Map<String, Object>> findAll(String sql, Object... params) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Connection con = getCon();
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
 		try {
-			System.out.println("SQL:" + sql);
+			logger.debug("SQL:" + sql);
 			pstm = con.prepareStatement(sql);
 			doParams(pstm, params);
 			rs = pstm.executeQuery();
@@ -155,7 +167,7 @@ public class DBHelper implements ServletContextListener {
 
 				list.add(map);
 			}
-			System.out.println("select rows " + list.size());
+			logger.debug("select rows " + list.size());
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -172,7 +184,7 @@ public class DBHelper implements ServletContextListener {
 		PreparedStatement pstmt;
 
 		try {
-			System.out.println("SQL:" + sql);
+			logger.debug("SQL:" + sql);
 			pstmt = con.prepareStatement(sql);
 			doParams(pstmt, params);
 			rs = pstmt.executeQuery();
@@ -198,15 +210,13 @@ public class DBHelper implements ServletContextListener {
 						continue;
 					}
 					cname = colnames[i];
-					cname = "set" + cname.substring(0, 1).toUpperCase()
-							+ cname.substring(1).toLowerCase();
+					cname = "set" + cname.substring(0, 1).toUpperCase() + cname.substring(1).toLowerCase();
 					if (ms != null && ms.length > 0) {
 						for (Method m : ms) {
 							mname = m.getName();
 							if (cname.equals(mname)) {
 								Class<?> cls = m.getParameterTypes()[0];
-								String clsName = cls.getSimpleName()
-										.toLowerCase();
+								String clsName = cls.getSimpleName().toLowerCase();
 								switch (clsName) {
 								case "byte":
 									m.invoke(t, rs.getByte(colnames[i]));
@@ -243,8 +253,7 @@ public class DBHelper implements ServletContextListener {
 									byte[] bytes = null;
 									Blob blob = rs.getBlob(colnames[i]);
 									try {
-										is = new BufferedInputStream(
-												blob.getBinaryStream());
+										is = new BufferedInputStream(blob.getBinaryStream());
 										bytes = new byte[(int) blob.length()];
 										is.read(bytes);
 									} catch (Exception e) {
@@ -253,8 +262,7 @@ public class DBHelper implements ServletContextListener {
 									m.invoke(t, bytes);
 									break;
 								default:
-									System.out.println("未知类型：" + clsName
-											+ "===>" + value + "，听天由命了！");
+									logger.debug("未知类型：" + clsName + "===>" + value + "，听天由命了！");
 									m.invoke(t, value);
 								}
 								break;
@@ -269,14 +277,20 @@ public class DBHelper implements ServletContextListener {
 		} finally {
 			close(con);
 		}
-		System.out.println("select rows " + list.size());
+		logger.debug("select rows " + list.size());
 		return list;
 	}
 
+	/**
+	 * 上下文监听器方法
+	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 	}
 
+	/**
+	 * 上下文监听器方法
+	 */
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		//从上下文初始化参数中加载连接参数
@@ -287,6 +301,37 @@ public class DBHelper implements ServletContextListener {
 			USR = sce.getServletContext().getInitParameter("dbUser");
 			PWD = sce.getServletContext().getInitParameter("dbPwd");
 			init();
+		}
+	}
+
+	/**
+	 * insert 方法，新增完成后返回自增主键值，注意：该方法不支持批量 insert
+	 * @param sql
+	 * @param params
+	 * @return 返回第一个自增列的值
+	 */
+	public static Integer doInsert(String sql, Object... params) {
+
+		Connection con = getCon();
+		PreparedStatement pstm = null;
+		try {
+			logger.debug("SQL:" + sql);
+			pstm = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			doParams(pstm, params);
+			pstm.executeUpdate();
+			// 获取自增列值结果集
+			ResultSet rs = pstm.getGeneratedKeys();
+			Integer key = null;
+			if (rs.next()) {
+				// 获取自增列值，先转字符串，再转Integer
+				key = Integer.parseInt(rs.getString(1));
+				logger.debug("insert row and return generated key " + key);
+			}
+			return key;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			close(con);
 		}
 	}
 
