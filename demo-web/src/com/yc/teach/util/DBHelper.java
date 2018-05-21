@@ -49,7 +49,13 @@ public class DBHelper implements ServletContextListener {
 		try {
 			//优先使用 JNDI 数据源
 			ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/sqlite/ycdb");
+			ds = (DataSource) ctx.lookup("java:comp/env/sqlite/lydb");
+			logger.debug("==============使用JNDI数据源==============");
+			/*for(int i=0;i<100;i++) {
+				Connection c = ds.getConnection();
+				System.out.println(i+"+"+c);
+				//c.close();
+			}*/
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			try {
@@ -288,7 +294,7 @@ public class DBHelper implements ServletContextListener {
 	}
 
 	/**
-	 * 上下文监听器方法
+	 * 上下文监听器方法，获取web.xml文件里面配置的数据库连接信息
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
