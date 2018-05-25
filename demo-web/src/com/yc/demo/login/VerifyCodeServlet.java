@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.yc.teach.util.VerifyCodeUtils;
+import com.ly.util.VerifyCodeUtils;
 
 @WebServlet("/vc.servlet")
 public class VerifyCodeServlet extends HttpServlet {

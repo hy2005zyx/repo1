@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.yc.teach.util.DBHelper;
+import com.ly.util.DBHelper;
 
 public class InsertIntoDatabase {
 	

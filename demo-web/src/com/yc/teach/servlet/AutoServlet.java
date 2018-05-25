@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.yc.teach.util.ServletUtils;
+import com.ly.util.ServletUtils;
 
 public abstract class AutoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

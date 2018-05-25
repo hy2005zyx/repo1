@@ -1,4 +1,4 @@
-package com.yc.teach.util;
+package com.ly.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -39,8 +39,8 @@ public class BeanUtils {
 				f.setAccessible(true);
 				f.set(t, ovalue);
 			} catch (Exception e) {
-				System.err.println("请求参数解析错误：参数名=" + f.getName() + "，字段类型="
-						+ f.getType() + "，参数值=" + svalue);
+				System.err.println(
+						"请求参数解析错误：参数名=" + f.getName() + "，字段类型=" + f.getType() + "，参数值=" + svalue);
 			}
 		}
 
@@ -64,6 +64,27 @@ public class BeanUtils {
 		return map;
 	}
 
+	/**
+	 * 将字符串转成指定的类型，如果 输入值为空，或者转换过程出现异常，则返回默认值
+	 * @param svalue
+	 * @param cls
+	 * @param defaultValue 默认值
+	 * @return
+	 */
+	public static <T> T cast(String svalue, Class<T> cls, T defaultValue) {
+		if (svalue == null) {
+			return defaultValue;
+		} else {
+			try {
+				T ret = cast(svalue, cls);
+				return ret == null ? defaultValue : ret;
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+				return defaultValue;
+			}
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	/**
 	 * 将字符串转成指定的类型
@@ -71,8 +92,7 @@ public class BeanUtils {
 	 * @param cls
 	 * @return
 	 */
-	public static <T> T cast(String svalue, Class<T> cls)
-			throws ParseException {
+	public static <T> T cast(String svalue, Class<T> cls) throws ParseException {
 		//空值跳过
 		if (svalue == null)
 			return null;
@@ -105,17 +125,14 @@ public class BeanUtils {
 			ovalue = (T) Boolean.valueOf(Boolean.parseBoolean(svalue));
 			break;
 		case "java.util.date":
-			ovalue = (T) new SimpleDateFormat(DEFAULT_DATE_FORMAT)
-					.parse(svalue);
+			ovalue = (T) new SimpleDateFormat(DEFAULT_DATE_FORMAT).parse(svalue);
 			break;
 		case "java.sql.date":
-			ovalue = (T) new SimpleDateFormat(DEFAULT_DATE_FORMAT)
-					.parse(svalue);
+			ovalue = (T) new SimpleDateFormat(DEFAULT_DATE_FORMAT).parse(svalue);
 			ovalue = (T) new java.sql.Date(((Date) ovalue).getTime());
 			break;
 		case "java.sql.timestamp":
-			ovalue = (T) new SimpleDateFormat(DEFAULT_DATETIME_FORMAT)
-					.parse(svalue);
+			ovalue = (T) new SimpleDateFormat(DEFAULT_DATETIME_FORMAT).parse(svalue);
 			ovalue = (T) new Timestamp(((Date) ovalue).getTime());
 			break;
 		case "java.lang.character":
@@ -139,7 +156,7 @@ public class BeanUtils {
 			case "java.sql.timestamp":
 			case "java.lang.float":
 			case "java.lang.double":
-			case "java.lang.character": 
+			case "java.lang.character":
 			case "java.lang.byte":
 			case "java.lang.short":
 				return true;

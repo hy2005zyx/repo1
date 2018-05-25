@@ -2,7 +2,9 @@
     <wb-module deploy-name="web-demo">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
+        <dependent-module archiveName="lyutil.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/lyutil/lyutil">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="web-demo"/>
         <property name="java-output-path" value="/web-demo/build/classes"/>
     </wb-module>

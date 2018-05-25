@@ -2,7 +2,7 @@
 <%@page import="com.yc.demo.ssq.jsp.entity.Lottery"%>
 <%@page import="java.util.List"%>
 <%@page import="com.yc.demo.ssq.jsp.entity.PageBean"%>
-<%@page import="com.yc.teach.util.DBHelper"%>
+<%@page import="com.ly.util.DBHelper"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%

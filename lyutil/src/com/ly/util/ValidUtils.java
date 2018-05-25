@@ -1,9 +1,11 @@
-package com.yc.teach.util;
+package com.ly.util;
 
-import com.yc.teach.biz.BizException;
+public class ValidUtils<T extends Exception> {
 
-public class ValidUtils {
-	
+	private static <T extends Exception> void throwException(String msg) throws T {
+
+	}
+
 	/**
 	 * 允许为空
 	 */
@@ -43,11 +45,12 @@ public class ValidUtils {
 	 * @param emptyMsg 字符串为空的信息，如果该参数为空
 	 * @param regexWithMsg 格式为{表达式1,信息1,表达式2,信息2,表达式3,信息3……}
 	 */
-	public static void check(String string, String emptyMsg, String... regexWithMsg) throws BizException {
+	public static <T extends Exception> void check(String string, String emptyMsg,
+			String... regexWithMsg) throws T {
 		if (isEmpty(string)) {
 			if (emptyMsg != null) {
 				//字符串为空输出的信息
-				throw new BizException(emptyMsg);
+				throwException(emptyMsg);
 			} else {
 				//字符串为空的信息为空则直接退出，表示允许该字符串为空
 				return;
@@ -55,10 +58,10 @@ public class ValidUtils {
 		}
 
 		else {
-			for (int i = 0; i < regexWithMsg.length - 1; i+=2) {
+			for (int i = 0; i < regexWithMsg.length - 1; i += 2) {
 				if (!string.matches(regexWithMsg[i])) {
 					//不匹配则返回对应信息（数组下一个元素就是报错信息）
-					throw new BizException(regexWithMsg[i + 1]);
+					throwException(regexWithMsg[i + 1]);
 				}
 			}
 		}

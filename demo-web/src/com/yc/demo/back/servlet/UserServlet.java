@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 import com.yc.teach.servlet.AutoServlet;
-import com.yc.teach.util.BeanUtils;
-import com.yc.teach.util.DBHelper;
+import com.ly.util.BeanUtils;
+import com.ly.util.DBHelper;
 import com.yc.teach.vo.EasyUIPage;
 
 @WebServlet("/user.s")

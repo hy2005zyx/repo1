@@ -3,7 +3,7 @@
 <%@page import="com.yc.demo.ssq.jsp.entity.Lottery"%>
 <%@page import="com.yc.demo.ssq.jsp.web.utils.*"%>
 <%@page import="com.yc.demo.ssq.jsp.entity.PageBean"%>
-<%@page import="com.yc.teach.util.DBHelper"%>
+<%@page import="com.ly.util.DBHelper"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	request.setCharacterEncoding("utf-8");

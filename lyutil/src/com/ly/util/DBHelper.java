@@ -1,4 +1,4 @@
-package com.yc.teach.util;
+package com.ly.util;
 
 import java.io.BufferedInputStream;
 import java.lang.reflect.Method;
@@ -35,7 +35,7 @@ public class DBHelper implements ServletContextListener {
 	public static String USR = "root";
 	public static String PWD = "123";
 	public static String DRV = "com.mysql.jdbc.Driver";
-	
+
 	private static Logger logger = Logger.getLogger(DBHelper.class);
 
 	private static Context ctx;
@@ -46,11 +46,16 @@ public class DBHelper implements ServletContextListener {
 	}
 
 	private static void init() {
+		ResourceBundle bundle = null;
 		try {
+			bundle = ResourceBundle.getBundle("db");
+			String jndidb = bundle.getString("JNDI-DB");
 			//优先使用 JNDI 数据源
 			ctx = new InitialContext();
-			ds = (DataSource) ctx.lookup("java:comp/env/sqlite/lydb");
+			jndidb = jndidb == null ? "java:comp/env/sqlite/lydb" : jndidb;
+			ds = (DataSource) ctx.lookup(jndidb);
 			logger.debug("==============使用JNDI数据源==============");
+			logger.debug("JNDI数据源名称：" + jndidb);
 			/*for(int i=0;i<100;i++) {
 				Connection c = ds.getConnection();
 				System.out.println(i+"+"+c);
@@ -60,7 +65,6 @@ public class DBHelper implements ServletContextListener {
 			logger.error(e.getMessage());
 			try {
 				// 从配置文件 db.properties 中读取数据库配置信息
-				ResourceBundle bundle = ResourceBundle.getBundle("db");
 				DRV = bundle.getString("driverClassName");
 				URL = bundle.getString("url");
 				USR = bundle.getString("user");
@@ -72,6 +76,7 @@ public class DBHelper implements ServletContextListener {
 			}
 			// 使用代码中的数据库配置（加载驱动必须保证会执行到）
 			try {
+				logger.debug("数据库URL：" + URL);
 				Class.forName(DRV);
 			} catch (ClassNotFoundException ex) {
 				throw new RuntimeException(ex);
@@ -215,7 +220,8 @@ public class DBHelper implements ServletContextListener {
 						continue;
 					}
 					cname = colnames[i];
-					cname = "set" + cname.substring(0, 1).toUpperCase() + cname.substring(1).toLowerCase();
+					cname = "set" + cname.substring(0, 1).toUpperCase()
+							+ cname.substring(1).toLowerCase();
 					if (ms != null && ms.length > 0) {
 						for (Method m : ms) {
 							mname = m.getName();
@@ -321,7 +327,7 @@ public class DBHelper implements ServletContextListener {
 		PreparedStatement pstm = null;
 		try {
 			logger.debug("SQL:" + sql);
-			pstm = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			pstm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			doParams(pstm, params);
 			pstm.executeUpdate();
 			// 获取自增列值结果集
