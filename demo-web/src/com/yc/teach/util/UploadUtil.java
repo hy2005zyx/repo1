@@ -96,7 +96,7 @@ public class UploadUtil {
 					// 文件名有可能重复，所以不能用原文件名，必须重生成一个新文件名，
 					fname = PATH+"/"+new Date().getTime() + ""+ new Random().nextInt(10000)+"."+f.getFileExt(); // 取得原文件的后缀名
 
-					// 保存
+					// 保存 SAVE_VIRTUAL web根目录
 					f.saveAs(fname, SmartUpload.SAVE_VIRTUAL);
 					picPath+=fname;
 					

@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart Upload API</title>
+</head>
+<body>
+	<main>
+	<div class="blog-content-box">
+		<div class="article-title-box">
+			<span class="article-type type-2 float-left">转</span>
+			<h2 class="title-article">SmartUpload 中文API帮助</h2>
+		</div>
+		<article>
+			<div id="article_content" class="article_content clearfix csdn-tracking-statistics" data-pid="blog" data-mod="popu_307" data-dsm="post">
+				<div class="markdown_views">
+					<p>㈠ File类</p>
+
+					<p>这个类包装了一个上传文件的所有信息。通过它，可以得到上传文件的文件名、文件大小、扩展名、文件数据等信息。</p>
+
+					<p>File类主要提供以下方法：</p>
+
+					<p>1、saveAs作用：将文件换名另存。</p>
+
+					<p>原型：</p>
+
+					<p>public void saveAs(java.lang.String destFilePathName)</p>
+
+					<p>或</p>
+
+					<p>public void saveAs(java.lang.String destFilePathName, int optionSaveAs)</p>
+
+					<p>其中，destFilePathName是另存的文件名，optionSaveAs是另存的选项，该选项有三个值，分别是SAVEAS_PHYSICAL,SAVEAS_VIRTUAL，SAVEAS_AUTO。SAVEAS_PHYSICAL表明以操作系统的根目录为文件根目录另存文件，SAVEAS_VIRTUAL表明以Web应用程序的根目录为文件根目录另存文件，SAVEAS_AUTO则表示让组件决定，当Web应用程序的根目录存在另存文件的目录时，它会选择SAVEAS_VIRTUAL，否则会选择SAVEAS_PHYSICAL。</p>
+
+					<p>例如，saveAs(“/upload/sample.zip”,SAVEAS_PHYSICAL)执行后若Web服务器安装在C盘，则另存的文件名实际是c:\upload\sample.zip。而saveAs(“/upload/sample.zip”,SAVEAS_VIRTUAL)执行后若Web应用程序的根目录是webapps/jspsmartupload，则另存的文件名实际是webapps/jspsmartupload/upload/sample.zip。saveAs(“/upload/sample.zip”,SAVEAS_AUTO)执行时若Web应用程序根目录下存在upload目录，则其效果同saveAs(“/upload/sample.zip”,SAVEAS_VIRTUAL)，否则同saveAs(“/upload/sample.zip”,SAVEAS_PHYSICAL)。</p>
+
+					<p>建议：对于Web程序的开发来说，最好使用SAVEAS_VIRTUAL，以便移植。</p>
+
+					<p>2、isMissing</p>
+
+					<p>作用：这个方法用于判断用户是否选择了文件，也即对应的表单项是否有值。选择了文件时，它返回false。未选文件时，它返回true。</p>
+
+					<p>原型：public boolean isMissing()</p>
+
+					<p>3、getFieldName</p>
+
+					<p>作用：取HTML表单中对应于此上传文件的表单项的名字。</p>
+
+					<p>原型：public String getFieldName()</p>
+
+					<p>4、getFileName</p>
+
+					<p>作用：取文件名（不含目录信息）</p>
+
+					<p>原型：public String getFileName()</p>
+
+					<p>5、getFilePathName</p>
+
+					<p>作用：取文件全名（带目录）</p>
+
+					<p>原型：public String getFilePathName</p>
+
+					<p>6、getFileExt</p>
+
+					<p>作用：取文件扩展名（后缀）</p>
+
+					<p>原型：public String getFileExt()</p>
+
+					<p>7、getSize</p>
+
+					<p>作用：取文件长度（以字节计）</p>
+
+					<p>原型：public int getSize()</p>
+
+					<p>8、getBinaryData</p>
+
+					<p>作用：取文件数据中指定位移处的一个字节，用于检测文件等处理。</p>
+
+					<p>原型：public byte getBinaryData(int index)。其中，index表示位移，其值在0到getSize()-1之间。</p>
+
+					<p>㈡ Files类</p>
+
+					<p>这个类表示所有上传文件的集合，通过它可以得到上传文件的数目、大小等信息。有以下方法：</p>
+
+					<p>1、getCount</p>
+
+					<p>作用：取得上传文件的数目。</p>
+
+					<p>原型：public int getCount()</p>
+
+					<p>2、getFile</p>
+
+					<p>作用：取得指定位移处的文件对象File（这是com.jspsmart.upload.File，不是java.io.File，注意区分）。</p>
+
+					<p>原型：public File getFile(int index)。其中，index为指定位移，其值在0到getCount()-1之间。</p>
+
+					<p>3、getSize</p>
+
+					<p>作用：取得上传文件的总长度，可用于限制一次性上传的数据量大小。</p>
+
+					<p>原型：public long getSize()</p>
+
+					<p>4、getCollection</p>
+
+					<p>作用：将所有上传文件对象以Collection的形式返回，以便其它应用程序引用，浏览上传文件信息。</p>
+
+					<p>原型：public Collection getCollection()</p>
+
+					<p>5、getEnumeration</p>
+
+					<p>作用：将所有上传文件对象以Enumeration（枚举）的形式返回，以便其它应用程序浏览上传文件信息。</p>
+
+					<p>原型：public Enumeration getEnumeration()</p>
+
+					<p>㈢ Request类</p>
+
+					<p>这个类的功能等同于JSP内置的对象request。只所以提供这个类，是因为对于文件上传表单，通过request对象无法获得表单项的值，必须通过jspSmartUpload组件提供的Request对象来获取。该类提供如下方法：</p>
+
+					<p>1、getParameter</p>
+
+					<p>作用：获取指定参数之值。当参数不存在时，返回值为null。</p>
+
+					<p>原型：public String getParameter(String name)。其中，name为参数的名字。</p>
+
+					<p>2、getParameterValues</p>
+
+					<p>作用：当一个参数可以有多个值时，用此方法来取其值。它返回的是一个字符串数组。当参数不存在时，返回值为null。</p>
+
+					<p>原型：public String[] getParameterValues(String name)。其中，name为参数的名字。</p>
+
+					<p>3、getParameterNames</p>
+
+					<p>作用：取得Request对象中所有参数的名字，用于遍历所有参数。它返回的是一个枚举型的对象。</p>
+
+					<p>原型：public Enumeration getParameterNames()</p>
+
+					<p>㈣ SmartUpload类这个类完成上传下载工作。</p>
+
+					<p>A．上传与下载共用的方法：</p>
+
+					<p>只有一个：initialize。</p>
+
+					<p>作用：执行上传下载的初始化工作，必须第一个执行。</p>
+
+					<p>原型：有多个，主要使用下面这个：</p>
+
+					<p>public final void initialize(javax.servlet.jsp.PageContext pageContext)</p>
+
+					<p>其中，pageContext为JSP页面内置对象（页面上下文）。</p>
+
+					<p>B．上传文件使用的方法：</p>
+
+					<p>1、upload</p>
+
+					<p>作用：上传文件数据。对于上传操作，第一步执行initialize方法，第二步就要执行这个方法。</p>
+
+					<p>原型：public void upload()</p>
+
+					<p>2、save</p>
+
+					<p>作用：将全部上传文件保存到指定目录下，并返回保存的文件个数。</p>
+
+					<p>原型：public int save(String destPathName)</p>
+
+					<p>和public int save(String destPathName,int option)</p>
+
+					<p>其中，destPathName为文件保存目录，option为保存选项，它有三个值，分别是SAVE_PHYSICAL,SAVE_VIRTUAL和SAVE_AUTO。（同File类的saveAs方法的选项之值类似）SAVE_PHYSICAL指示组件将文件保存到以操作系统根目录为文件根目录的目录下，SAVE_VIRTUAL指示组件将文件保存到以Web应用程序根目录为文件根目录的目录下，而SAVE_AUTO则表示由组件自动选择。</p>
+
+					<p>注：save(destPathName)作用等同于save(destPathName,SAVE_AUTO)。</p>
+
+					<p>3、getSize</p>
+
+					<p>作用：取上传文件数据的总长度</p>
+
+					<p>原型：public int getSize()</p>
+
+					<p>4、getFiles</p>
+
+					<p>作用：取全部上传文件，以Files对象形式返回，可以利用Files类的操作方法来获得上传文件的数目等信息。</p>
+
+					<p>原型：public Files getFiles()</p>
+
+					<p>5、getRequest</p>
+
+					<p>作用：取得Request对象，以便由此对象获得上传表单参数之值。</p>
+
+					<p>原型：public Request getRequest()</p>
+
+					<p>6、setAllowedFilesList</p>
+
+					<p>作用：设定允许上传带有指定扩展名的文件，当上传过程中有文件名不允许时，组件将抛出异常。</p>
+
+					<p>原型：public void setAllowedFilesList(String allowedFilesList)</p>
+
+					<p>其中，allowedFilesList为允许上传的文件扩展名列表，各个扩展名之间以逗号分隔。如果想允许上传那些没有扩展名的文件，可以用两个逗号表示。例如：setAllowedFilesList(“doc,txt,,”)将允许上传带doc和txt扩展名的文件以及没有扩展名的文件。</p>
+
+					<p>7、setDeniedFilesList</p>
+
+					<p>作用：用于限制上传那些带有指定扩展名的文件。若有文件扩展名被限制，则上传时组件将抛出异常。</p>
+
+					<p>原型：public void setDeniedFilesList(String deniedFilesList)</p>
+
+					<p>其中，deniedFilesList为禁止上传的文件扩展名列表，各个扩展名之间以逗号分隔。如果想禁止上传那些没有扩展名的文件，可以用两个逗号来表示。例如：setDeniedFilesList(“exe,bat,,”)将禁止上传带exe和bat扩展名的文件以及没有扩展名的文件。</p>
+
+					<p>8、setMaxFileSize</p>
+
+					<p>作用：设定每个文件允许上传的最大长度。</p>
+
+					<p>原型：public void setMaxFileSize(long maxFileSize)</p>
+
+					<p>其中，maxFileSize为为每个文件允许上传的最大长度，当文件超出此长度时，将不被上传。</p>
+
+					<p>9、setTotalMaxFileSize</p>
+
+					<p>作用：设定允许上传的文件的总长度，用于限制一次性上传的数据量大小。</p>
+
+					<p>原型：public void setTotalMaxFileSize(long totalMaxFileSize)</p>
+
+					<p>其中，totalMaxFileSize为允许上传的文件的总长度。</p>
+
+					<p>C．下载文件常用的方法</p>
+
+					<p>1、setContentDisposition</p>
+
+					<p>作用：将数据追加到MIME文件头的CONTENT-DISPOSITION域。jspSmartUpload组件会在返回下载的信息时自动填写MIME文件头的CONTENT-DISPOSITION域，如果用户需要添加额外信息，请用此方法。</p>
+
+					<p>原型：public void setContentDisposition(String contentDisposition)</p>
+
+					<p>其中，contentDisposition为要添加的数据。如果contentDisposition为null，则组件将自动添加”attachment;”，以表明将下载的文件作为附件，结果是IE浏览器将会提示另存文件，而不是自动打开这个文件（IE浏览器一般根据下载的文件扩展名决定执行什么操作，扩展名为doc的将用word程序打开，扩展名为pdf的将用acrobat程序打开，等等）。</p>
+
+					<p>2、downloadFile</p>
+
+					<p>作用：下载文件。</p>
+
+					<p>原型：共有以下三个原型可用，第一个最常用，后两个用于特殊情况下的文件下载（如更改内容类型，更改另存的文件名）。</p>
+
+					<p>① public void downloadFile(String sourceFilePathName)</p>
+
+					<p>其中，sourceFilePathName为要下载的文件名（带目录的文件全名）</p>
+
+					<p>② public void downloadFile(String sourceFilePathName,String contentType)</p>
+
+					<p>其中，sourceFilePathName为要下载的文件名（带目录的文件全名）,contentType为内容类型（MIME格式的文件类型信息，可被浏览器识别）。</p>
+
+					<p>③ public void downloadFile(String sourceFilePathName,String contentType,String destFileName)</p>
+
+					<p>其中，sourceFilePathName为要下载的文件名（带目录的文件全名）,contentType为内容类型（MIME格式的文件类型信息，可被浏览器识别）,destFileName为下载后默认的另存文件名。</p>
+				</div>
+				<link rel="stylesheet" href="https://csdnimg.cn/release/phoenix/template/css/markdown_views-ea0013b516.css">
+			</div>
+
+		</article>
+
+		<div class="article-bar-bottom">
+			<div class="tags-box artic-tag-box">
+				<span class="label">文章标签：</span>
+				<a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=api&amp;t=blog" target="_blank">api </a>
+				<a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=数据&amp;t=blog" target="_blank">数据 </a>
+				<a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=class&amp;t=blog" target="_blank">class </a>
+				<a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=smartUploa&amp;t=blog" target="_blank">smartUploa </a>
+				<a class="tag-link" href="http://so.csdn.net/so/search/s.do?q=smarty&amp;t=blog" target="_blank">smarty </a>
+			</div>
+			<div class="tags-box">
+				<span class="label">个人分类：</span>
+				<a class="tag-link" href="https://blog.csdn.net/u010735684/article/category/5815783" target="_blank">上传下载 </a>
+			</div>
+		</div>
+
+		<!-- !empty($pre_next_article[0]) -->
+	</div>
+	<script>
+    $(".MathJax").remove();
+</script> <script type="text/javascript" src="https://static-blog.csdn.net/mdeditor/public/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> <script type="text/x-mathjax-config;executed=true">
+    MathJax.Hub.Config({
+			"HTML-CSS": {
+					linebreaks: { automatic: true, width: "94%container" },
+					imageFont: null
+			},
+			tex2jax: {
+				preview: "none"
+			},
+			mml2jax: {
+				preview: 'none'
+			}
+	});
+</script> <script>
+
+	var edu_ad_is_big_data = 0;
+	(function(){
+		var btnReadmore = $("#btn-readmore");
+		if(btnReadmore.length>0){
+			var winH = $(window).height();
+			var articleBox = $("div.article_content");
+			var artH = articleBox.height();
+			if(artH > winH*2){
+				articleBox.css({
+					'height':winH*2+'px',
+					'overflow':'hidden'
+				})
+				btnReadmore.click(function(){
+					articleBox.removeAttr("style");
+					$(this).parent().remove();
+				})
+			}else{
+				btnReadmore.parent().remove();
+			}
+		}
+	})()
+</script>
+	<div class="edu-promotion">
+		<div class="csdn-tracking-statistics" data-dsm="post">
+			<a href="###">
+				<iframe scrolling="no" allowfullscreen="true" width="100%" height="162px" src="https://edu.csdn.net/sp/blog.php?type=bigdata1" frameborder="0" seamless="" style="display: inherit;"></iframe>
+			</a>
+		</div>
+	</div>
+	<a id="commentBox"></a>
+	<div class="comment-box">
+		<div class="unlogin-box text-center">
+			想对作者说点什么？
+			<!-- $curl 当前地址 -->
+			<a href="https://passport.csdn.net/account/login?from=https://blog.csdn.net/u010735684/article/details/48464313#commentBox" class="btn btn-sm btn-red">我来说一句</a>
+		</div>
+		<div class="comment-list-container">
+			<a id="comments"></a>
+			<div class="comment-list-box" style="display: none;"></div>
+			<div id="commentPage" class="pagination-box d-none" style="display: none;"></div>
+
+		</div>
+	</div>
+	<div class="recommend-box">
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="true" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/u013620046/6915181" target="_blank" strategy="BlogCommendFromBaidu_0">
+						jsp<em>SmartUpload</em><em>中文</em><em>API</em>.doc
+					</a>
+				</h4>
+				<p>
+					<span class="data">2014年02月12日 </span> <span class="size">36KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/u013620046/6915181" target="_blank" strategy="BlogCommendFromBaidu_0">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/doc.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="true" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/xiazdong/article/details/6887956" target="_blank" strategy="BlogCommendFromBaidu_1">
+					文件上传：<em>SmartUpload</em>和FileUpload
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/xiazdong/article/details/6887956" target="_blank">
+					一、文件上传简介 文件上传在HTML中是以 形式出现的。 文件上传有两种选择： (1)<em>SmartUpload</em>：以jar包形式出现，需要把他添加到classpath或to...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/xiazdong" title="xiazdong" target="_blank">
+						<img src="https://avatar.csdn.net/1/3/6/3_xiazdong.jpg" alt="xiazdong" class="avatar-pic"> <span class="name">xiazdong</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2011-10-19 14:14:50</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：11157</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-ad-box">
+			<newsfeed class="newsfeed QIHOO__WEB__SO__1527342757341_215" id="QIHOO__WEB__SO__1527342757341_215" style="display:block;margin:0;padding:0;border:none;width:852px;height:90px;overflow-y:hidden;overflow-x:hidden;position:relative;text-align:left;">
+			<info-div id="QIHOO__WEB__SO__1527342757341_215-info" style="zoom:1">
+			<info-div class="QIHOO__WEB__SO__1527342757341_215 singleImage clk"
+				data-href="https://ssxd.mediav.com/s?type=2&amp;r=20&amp;mv_ref=blog%2Ecsdn%2Enet&amp;enup=CAAB35LyvQgAAr3ykt8A&amp;mvid=ODM4MjMzMDM4MzY1MjIxMjYwNTAwMTg&amp;bid=125d4ce918b05826&amp;price=AAAAAFsJZqQAAAAAAA1HLfCp87hYoXLBZdlNPw==&amp;finfo=DAABCAABAAAAUggAAgAAAC0EAAM/WAwVZXyELQAIAAIAAAADCgADc+xfWKcm6MMIAAQAAAA4BgAGLbcIAAgADIMgCgAJAAAAAAACEBgGAAoAAAA&amp;ugi=FcTgigEVyNtrTBUCFboCFcQCFQAAFef7v/YOJcgBAA&amp;uai=FaixkwIlAhUEFvrdupyOkKvs5wEV8ggl2t6JzQEUAhUAAA&amp;ubi=FeTCPhWiso0CFarXyBQV8qCXUxUEFRwWkLGUwRYW+t3Pg5jWr+znATQCFrDAECUGFazttPIDFfwFFQAA&amp;clickid=0&amp;cpx=__CPX__&amp;cpy=__CPY__&amp;cs=__EVENT_TIME_START__&amp;ce=__EVENT_TIME_END__&amp;csign=9562bdb81c8593db&amp;url=http%3A%2F%2Fwww%2Efclaser%2Ecn%2FCS%2D3606%2Ehtm%3Fgzid%3DCS68"
+				data-pv="https://ssxd.mediav.com/s?type=1&amp;r=20&amp;tid=ODM4MjMzMDM4MzY1MjIxMjYwNTAwMTg&amp;finfo=DAABCAABAAAAUggAAgAAAC0EAAM/WAwVZXyELQAIAAIAAAADCgADc+xfWKcm6MMIAAQAAAA4BgAGLbcIAAgADIMgCgAJAAAAAAACEBgGAAoAAAA&amp;mv_ref=blog%2Ecsdn%2Enet&amp;enup=CAAB35LyvQgAAr3ykt8A&amp;mvid=ODM4MjMzMDM4MzY1MjIxMjYwNTAwMTg&amp;bid=125d4ce918b05826&amp;ugi=FcTgigEVyNtrTBUCFboCFcQCFQAAFef7v/YOJcgBAA&amp;uai=FaixkwIlAhUEFvrdupyOkKvs5wEV8ggl2t6JzQEUAhUAAA&amp;ubi=FeTCPhWiso0CFarXyBQV8qCXUxUEFRwWkLGUwRYW+t3Pg5jWr+znATQCFrDAECUGFazttPIDFfwFFQAA&amp;ds=1&amp;price=AAAAAFsJZqQAAAAAAA1HLfCp87hYoXLBZdlNPw==,https://max-l.mediav.com/rtb?type=2&amp;d=100&amp;b=125d4ce918b05826&amp;p=2255956&amp;l=1136674&amp;s=1&amp;z=1&amp;w=AAAAAFsJZqQAAAAAAA1HZF6wocdGuAwFeTwEdA==&amp;k=Lp/QvgAAAAA=&amp;i=CxmV4SsZiANK&amp;v=83823303836522126050018"
+				data-clk="https://max-l.mediav.com/rtb?type=3&amp;d=100&amp;b=125d4ce918b05826&amp;p=2255956&amp;l=1136674&amp;s=1&amp;k=Lp/QvgAAAAA=&amp;i=CxmV4SsZiANK&amp;v=83823303836522126050018&amp;x=__OFFSET_X__&amp;y=__OFFSET_Y__&amp;st=__EVENT_TIME_START__&amp;et=__EVENT_TIME_END__&amp;tc=&amp;turl="> <info-div class="wrap"> <info-div class="singleImage-img singleImage-img-right"> <info-div class="img" style="background-image:url(https://s3m.mediav.com/galileo/512178-06c415861b19936f29ab8b98ba22fba0.jpg)">
+			<info-div class="ads-tag"></info-div></info-div> </info-div> <info-div class="singleImage-body singleImage-body-right"> <info-div class="singleImage-title">惊爆价256G内存大屏智能手机699元起！仅限衡阳</info-div> <info-div class="singleImage-desc">爱德 · 顶新</info-div> </info-div> </info-div> <info-div style="clear:both;"></info-div> </info-div> </info-div></newsfeed>
+		</div>
+		<script>
+				  var width = $("div.recommend-box").outerWidth() - 48;
+					NEWS_FEED({
+						w: width,
+						h : 90,
+						showid : 'GNKXx7',
+						placeholderId: "ad1",
+						inject : 'define',
+						define : {
+							imagePosition : 'right',
+							imageBorderRadius : 0,
+							imageWidth: 120,
+							imageHeight: 90,
+							imageFill : 'clip',
+							displayImage : true,
+							displayTitle : true,
+							titleFontSize: 20,
+							titleFontColor: '#333',
+							titleFontFamily : 'Microsoft Yahei',
+							titleFontWeight: 'bold',
+							titlePaddingTop : 0,
+							titlePaddingRight : 0,
+							titlePaddingBottom : 10,
+							titlePaddingLeft : 0,
+							displayDesc : true,
+							descFontSize: 14,
+							descFontColor: '#6b6b6b',
+							descFontFamily : 'Microsoft Yahei',
+							paddingTop : 0,
+							paddingRight : 0,
+							paddingBottom : 0,
+							paddingLeft : 0,
+							backgroundColor: '#fff',
+							hoverColor: '#ca0c16'
+						}
+					})
+				</script>
+
+
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/zxtutuai/article/details/51067116" target="_blank" strategy="BlogCommendFromBaidu_2">
+					菜鸟学习之<em>smartupload</em>+servlet简单的文件上传
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/zxtutuai/article/details/51067116" target="_blank">
+					创建工程后首先需要导入包 jsp-<em>api</em>.jar jsp<em>smartupload</em>.jar servlet-<em>api</em>.jar 将这三个包放入web-inf 下的lib中 然后就可以开始编写...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/zxtutuai" title="zxtutuai" target="_blank">
+						<img src="https://avatar.csdn.net/5/5/1/3_zxtutuai.jpg" alt="zxtutuai" class="avatar-pic"> <span class="name">zxtutuai</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2016-04-05 18:56:10</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：2537</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/u011990285/article/details/20080221" target="_blank" strategy="BlogCommendFromBaidu_3">
+					<em>SmartUpload</em>用法
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/u011990285/article/details/20080221" target="_blank">
+					﻿﻿ 一、安装篇 jsp<em>SmartUpload</em>是由www.jspsmart.com网站开发的一个可免费使用的全功能的文件上传下载组件，适于嵌入执行上传下载操作的JSP文件中。该组件有以下几...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/u011990285" title="u011990285" target="_blank">
+						<img src="https://avatar.csdn.net/9/1/4/3_u011990285.jpg" alt="u011990285" class="avatar-pic"> <span class="name">u011990285</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2014-02-27 23:00:44</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：869</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/u012229179/article/details/50930300" target="_blank" strategy="searchFromBaidu_4">
+					<em>SmartUpload</em><em>中文</em><em>API</em>
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/u012229179/article/details/50930300" target="_blank"> ㈠ File类 这个类包装了一个上传文件的所有信息。通过它，可以得到上传文件的文件名、文件大小、扩展名、文件数据等信息。 File类主要提供以下方法：1、saveAs作用：将文件换名另存。原型：p... </a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/u012229179" title="u012229179" target="_blank">
+						<img src="https://avatar.csdn.net/F/B/6/3_u012229179.jpg" alt="u012229179" class="avatar-pic"> <span class="name">u012229179</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2016-03-19 11:53:36</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：152</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/sunsize1130/article/details/10105743" target="_blank" strategy="searchFromBaidu_5">
+					<em>SmartUpload</em>的使用方法
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/sunsize1130/article/details/10105743" target="_blank"> JSP页面下载链接： "&gt; ------------------------------------------------------------------------------------... </a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/sunsize1130" title="sunsize1130" target="_blank">
+						<img src="https://avatar.csdn.net/8/C/2/3_sunsize1130.jpg" alt="sunsize1130" class="avatar-pic"> <span class="name">sunsize1130</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2013-08-20 13:58:12</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：719</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-ad-box">
+			<newsfeed class="newsfeed QIHOO__WEB__SO__1527342757386_926" id="QIHOO__WEB__SO__1527342757386_926" style="display:block;margin:0;padding:0;border:none;width:852px;height:90px;overflow-y:hidden;overflow-x:hidden;position:relative;text-align:left;">
+			<info-div id="QIHOO__WEB__SO__1527342757386_926-info" style="zoom:1">
+			<info-div class="QIHOO__WEB__SO__1527342757386_926 singleImage clk"
+				data-href="https://ssxd.mediav.com/s?type=2&amp;r=20&amp;mv_ref=blog%2Ecsdn%2Enet&amp;enup=CAAB35LyvQgAAr3ykt8A&amp;mvid=ODY4MjA1MTI1MzY1MjIxMjYwNTAwMTg&amp;bid=125d4ce92f4c2c7d&amp;price=AAAAAFsJZqQAAAAAAA4mmK5z5wXXJQvNqXy4nQ==&amp;finfo=DAABCAABAAAAYwgAAgAAAC4EAAM/Way3EcvuJwAIAAIAAAADCgADeQyDbd23W7UIAAQAAAA/BgAGLbcIAAgADxswCgAJAAAAAAACEBQGAAoAAAA&amp;ugi=FcTgigEVyNtrTBUCFboCFcQCFQAAFef7v/YOJcgBAA&amp;uai=FeTGlAIlAhUEFvqdvPKelb2M8gEV8ggl8evRiQgUAhUAAA&amp;ubi=FeTCPhWiso0CFarXyBQV8qCXUxUEFRwWkLGUwRYW+p3R2ajbwYzyATQCFqjAECUGFbWE2oAMFfwFFQAA&amp;clickid=0&amp;cpx=__CPX__&amp;cpy=__CPY__&amp;cs=__EVENT_TIME_START__&amp;ce=__EVENT_TIME_END__&amp;csign=9562bdb81c8593db&amp;url=http%3A%2F%2Fwww%2Efclaser%2Ecn%2FCS%2D3606%2Ehtm%3Fgzid%3DCS68"
+				data-pv="https://ssxd.mediav.com/s?type=1&amp;r=20&amp;tid=ODY4MjA1MTI1MzY1MjIxMjYwNTAwMTg&amp;finfo=DAABCAABAAAAYwgAAgAAAC4EAAM/Way3EcvuJwAIAAIAAAADCgADeQyDbd23W7UIAAQAAAA/BgAGLbcIAAgADxswCgAJAAAAAAACEBQGAAoAAAA&amp;mv_ref=blog%2Ecsdn%2Enet&amp;enup=CAAB35LyvQgAAr3ykt8A&amp;mvid=ODY4MjA1MTI1MzY1MjIxMjYwNTAwMTg&amp;bid=125d4ce92f4c2c7d&amp;ugi=FcTgigEVyNtrTBUCFboCFcQCFQAAFef7v/YOJcgBAA&amp;uai=FeTGlAIlAhUEFvqdvPKelb2M8gEV8ggl8evRiQgUAhUAAA&amp;ubi=FeTCPhWiso0CFarXyBQV8qCXUxUEFRwWkLGUwRYW+p3R2ajbwYzyATQCFqjAECUGFbWE2oAMFfwFFQAA&amp;ds=1&amp;price=AAAAAFsJZqQAAAAAAA4mmK5z5wXXJQvNqXy4nQ==,https://max-l.mediav.com/rtb?type=2&amp;d=100&amp;b=125d4ce92f4c2c7d&amp;p=2265522&amp;l=1136674&amp;s=1&amp;z=1&amp;w=AAAAAFsJZqQAAAAAAA4mzKbxtn4Y9AVnsLKiog==&amp;k=4JVB1QAAAAA=&amp;i=O5A7hlsZiAcf&amp;v=86820512536522126050018"
+				data-clk="https://max-l.mediav.com/rtb?type=3&amp;d=100&amp;b=125d4ce92f4c2c7d&amp;p=2265522&amp;l=1136674&amp;s=1&amp;k=4JVB1QAAAAA=&amp;i=O5A7hlsZiAcf&amp;v=86820512536522126050018&amp;x=__OFFSET_X__&amp;y=__OFFSET_Y__&amp;st=__EVENT_TIME_START__&amp;et=__EVENT_TIME_END__&amp;tc=&amp;turl="> <info-div class="wrap"> <info-div class="singleImage-img singleImage-img-right"> <info-div class="img" style="background-image:url(https://s3m.mediav.com/galileo/512178-06c415861b19936f29ab8b98ba22fba0.jpg)">
+			<info-div class="ads-tag"></info-div></info-div> </info-div> <info-div class="singleImage-body singleImage-body-right"> <info-div class="singleImage-title">惊爆价256G内存大屏智能手机699元起！仅限衡阳</info-div> <info-div class="singleImage-desc">爱德 · 顶新</info-div> </info-div> </info-div> <info-div style="clear:both;"></info-div> </info-div> </info-div></newsfeed>
+		</div>
+		<script>
+				var width = $("div.recommend-box").outerWidth() - 48;
+				NEWS_FEED({
+					w: width,
+					h: 90,
+					showid: 'Afihld',
+					placeholderId: 'a_d_feed_0',
+					inject: 'define',
+					define: {
+						imagePosition: 'right',
+						imageBorderRadius: 0,
+						imageWidth: 120,
+						imageHeight: 90,
+						imageFill: 'clip',
+						displayImage: true,
+						displayTitle: true,
+						titleFontSize: 20,
+						titleFontColor: '#333',
+						titleFontFamily: 'Microsoft Yahei',
+						titleFontWeight: 'bold',
+						titlePaddingTop: 0,
+						titlePaddingRight: 0,
+						titlePaddingBottom: 10,
+						titlePaddingLeft: 0,
+						displayDesc: true,
+						descFontSize: 14,
+						descFontColor: '#6b6b6b',
+						descFontFamily: 'Microsoft Yahei',
+						paddingTop: 0,
+						paddingRight: 0,
+						paddingBottom: 0,
+						paddingLeft: 0,
+						backgroundColor: '#fff',
+						hoverColor: '#ca0c16'
+					}
+				})
+			</script>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/youlianying/article/details/4073800" target="_blank" strategy="searchFromBaidu_6">
+					<em>SmartUpload</em>的<em>API</em>
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/youlianying/article/details/4073800" target="_blank"> File类：这个类包装了一个上传文件的所有信息。通过它，可以得到上传文件的文件名、文件大小、扩展名、文件数据等信息。1、saveAs -- 作用：将文件换名另存。原型： public void sav... </a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/youlianying" title="youlianying" target="_blank">
+						<img src="https://avatar.csdn.net/D/9/E/3_youlianying.jpg" alt="youlianying" class="avatar-pic"> <span class="name">youlianying</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2009-04-14 19:13:00</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：869</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://download.csdn.net/download/yunzhuwuxin/4523957" target="_blank" strategy="searchFromBaidu_7">
+					Jsp&lt;em&gt;<em>SmartUpload</em>&lt;/em&gt; &lt;em&gt;<em>API</em>&lt;/em&gt; DOC.chm
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://download.csdn.net/download/yunzhuwuxin/4523957" target="_blank" strategy="searchFromBaidu_7">
+					2012-08-24 上传大小:44KB Jsp&lt;em&gt;<em>SmartUpload</em><em>API</em>&lt;/em&gt;DOC Package com.jspsmart.upload Class Sum...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<span class="read-num">下载</span>
+
+				</p>
+				<p>
+					<span class="date">2018年05月09日 00:00</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/ForWayfarer/article/details/2906936" target="_blank" strategy="searchFromBaidu_8">
+					<em>smartupload</em> -- <em>api</em>
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/ForWayfarer/article/details/2906936" target="_blank"> File类：这个类包装了一个上传文件的所有信息。通过它，可以得到上传文件的文件名、文件大小、扩展名、文件数据等信息。1、saveAs -- 作用：将文件换名另存。原型： public void sav... </a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/ForWayfarer" title="ForWayfarer" target="_blank">
+						<img src="https://avatar.csdn.net/8/6/8/3_forwayfarer.jpg" alt="ForWayfarer" class="avatar-pic"> <span class="name">ForWayfarer</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2008-09-10 00:55:00</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：763</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://download.csdn.net/download/kaisep/496201" target="_blank" strategy="searchFromBaidu_9">
+					文件上传组件Jsp&lt;em&gt;<em>SmartUpload</em>&lt;/em&gt;
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://download.csdn.net/download/kaisep/496201" target="_blank" strategy="searchFromBaidu_9">
+					jsp&lt;em&gt;<em>smartupload</em>&lt;/em&gt;文件上传&lt;em&gt;<em>api</em>&lt;/em&gt;+jar文件 立即下载 上传者: xu0612204126 时间: 20...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<span class="read-num">下载</span>
+
+				</p>
+				<p>
+					<span class="date">2018年05月04日 00:00</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/JikAK1153/article/details/41145689" target="_blank" strategy="BlogCommendFromQuerySearch_11">
+					解决<em>SmartUpload</em>的<em>中文</em>乱码问题——超简单！
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/JikAK1153/article/details/41145689" target="_blank"> 相信大家用到文件上传时，用到 </a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/JikAK1153" title="JikAK1153" target="_blank">
+						<img src="https://avatar.csdn.net/E/4/7/3_jikak1153.jpg" alt="JikAK1153" class="avatar-pic"> <span class="name">JikAK1153</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2014-11-15 14:20:18</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：2130</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/forever_bin/535011" target="_blank" strategy="BlogCommendFromQuerySearch_12">
+						<em>smartupload</em> <em>中文</em><em>api</em>
+					</a>
+				</h4>
+				<p>
+					<span class="data">2008年07月11日 </span> <span class="size">36KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/forever_bin/535011" target="_blank" strategy="BlogCommendFromQuerySearch_12">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/rar.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/jelin/640739" target="_blank" strategy="BlogCommendFromQuerySearch_13">
+						<em>SmartUpload</em> 上传组件(<em>中文</em>终极解决版,包括<em>中文</em>文件名上传后乱码,<em>中文</em>参数,下载),JDK 1.6
+					</a>
+				</h4>
+				<p>
+					<span class="data">2008年09月21日 </span> <span class="size">15KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/jelin/640739" target="_blank" strategy="BlogCommendFromQuerySearch_13">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/rar.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-ad-box" id="yd_a_d_feed_11">
+			<iframe scrolling="no" style="width: 100%; height: 90px; border: 0px;"></iframe>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/huise513/article/details/52503196" target="_blank" strategy="BlogCommendFromQuerySearch_14">
+					解决<em>smartupload</em>获取<em>中文</em>文件名乱码的问题
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/huise513/article/details/52503196" target="_blank">
+					首先我是一个初学者，如果有说得不对的地方请大家多多指导。 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 我在使用samartupload组件做上传下载的时候出现了获取文件名为<em>中文</em>时乱码的问题，因为我的页面使用的是utf-8，serv...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/huise513" title="huise513" target="_blank">
+						<img src="https://avatar.csdn.net/1/9/4/3_huise513.jpg" alt="huise513" class="avatar-pic"> <span class="name">huise513</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2016-09-11 11:53:09</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：2146</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/samlover/article/details/214796" target="_blank" strategy="BlogCommendFromQuerySearch_15">
+					<em>smartupload</em>中下载<em>中文</em>文件名的处理方法
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/samlover/article/details/214796" target="_blank"> System.runFinalizersOnExit(true); ActiveXComponent mf = new ActiveXComponent("MakerCom.Make... </a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/samlover" title="samlover" target="_blank">
+						<img src="https://avatar.csdn.net/C/F/8/3_samlover.jpg" alt="samlover" class="avatar-pic"> <span class="name">samlover</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2004-12-13 15:20:00</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：937</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/u014571132/article/details/51470448" target="_blank" strategy="BlogCommendFromQuerySearch_16">
+					关于jsp<em>smartupload</em> <em>中文</em>各种乱码的解决方法
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/u014571132/article/details/51470448" target="_blank">
+					因为我的程序全都是utf-8 而<em>smartupload</em>的好像是GBK可能 如果想改jar包源码的话 可以看看这个网址http://www.360doc.com/content/08/1218/14/...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/u014571132" title="u014571132" target="_blank">
+						<img src="https://avatar.csdn.net/F/A/8/3_u014571132.jpg" alt="u014571132" class="avatar-pic"> <span class="name">u014571132</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2016-05-21 14:46:39</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：1451</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/yimagudao/9620517" target="_blank" strategy="BlogCommendFromQuerySearch_17">
+						<em>smartUpload</em>上传文件包修改后解决<em>中文</em>乱码
+					</a>
+				</h4>
+				<p>
+					<span class="data">2016年09月02日 </span> <span class="size">8KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/yimagudao/9620517" target="_blank" strategy="BlogCommendFromQuerySearch_17">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/zip.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/Kuang_2014/article/details/44308901" target="_blank" strategy="BlogCommendFromQuerySearch_18">
+					<em>SmartUpload</em>控件 <em>中文</em>乱码问题 jsp+servlet解决办法
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/Kuang_2014/article/details/44308901" target="_blank">
+					看到很多网友找不到答案，所有特别为这些网友写一点思路，<em>SmartUpload</em>控件 <em>中文</em>乱码问题 jsp+servlet解决办法...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/Kuang_2014" title="Kuang_2014" target="_blank">
+						<img src="https://avatar.csdn.net/C/6/8/3_kuang_2014.jpg" alt="Kuang_2014" class="avatar-pic"> <span class="name">Kuang_2014</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2015-03-16 17:20:08</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：995</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-ad-box" id="_cwynrhukiua">
+			<iframe id="iframeu3394176_0" name="iframeu3394176_0"
+				src="https://pos.baidu.com/kckm?conwid=800&amp;conhei=100&amp;rdid=3394176&amp;dc=3&amp;di=u3394176&amp;dri=0&amp;dis=0&amp;dai=3&amp;ps=4485x63&amp;enu=encoding&amp;dcb=___adblockplus&amp;dtm=HTML_POST&amp;dvi=0.0&amp;dci=-1&amp;dpt=none&amp;tsr=0&amp;tpr=1527342757837&amp;ti=SmartUpload%20%E4%B8%AD%E6%96%87API%E5%B8%AE%E5%8A%A9%20-%20CSDN%E5%8D%9A%E5%AE%A2&amp;ari=2&amp;dbv=2&amp;drs=3&amp;pcs=1343x619&amp;pss=1343x4558&amp;cfv=0&amp;cpl=33&amp;chi=1&amp;cce=true&amp;cec=UTF-8&amp;tlm=1527342757&amp;prot=2&amp;rw=619&amp;ltu=https%3A%2F%2Fblog.csdn.net%2Fu010735684%2Farticle%2Fdetails%2F48464313&amp;ltr=https%3A%2F%2Fwww.baidu.com%2Flink%3Furl%3DclP_umOgIZJ6o-xaT0ZoHcXRRn9iG8qoFQajV8KvaxE-kXEkTwD2c6jdtxXvf1-3EUGuu-F-STIJEV6kNagfU15xpBoHIixhlrLxrGwlSRO%26wd%3D%26eqid%3Db042a31a00002458000000065b09667d&amp;ecd=1&amp;uc=1360x738&amp;pis=-1x-1&amp;sr=1360x768&amp;tcn=1527342758&amp;qn=19d8441c9c6043e4&amp;tt=1527342757200.640.641.646"
+				width="800" height="100" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border: 0; vertical-align: bottom; margin: 0; width: 800px; height: 100px" allowtransparency="true"></iframe>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/IT_xiaocao/article/details/51114111" target="_blank" strategy="BlogCommendFromQuerySearch_19">
+					<em>SmartUpload</em><em>中文</em>乱码解决办法
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/IT_xiaocao/article/details/51114111" target="_blank">
+					最近在捣鼓<em>SmartUpload</em>，这东西上手到是真挺方便的，只是碰上文件名是<em>中文</em>名时就乱码，真是烦人，在网上搜了下发现最多的就是下面的内容，只是这位大虾改的是下载部分，而我需要的是上传部分。还得照着自...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/IT_xiaocao" title="IT_xiaocao" target="_blank">
+						<img src="https://avatar.csdn.net/B/4/7/3_it_xiaocao.jpg" alt="IT_xiaocao" class="avatar-pic"> <span class="name">IT_xiaocao</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2016-04-10 18:02:12</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：937</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/yimagudao/article/details/52420044" target="_blank" strategy="BlogCommendFromQuerySearch_20">
+					<em>smartUpload</em>上传下载文件以及<em>中文</em>乱码
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/yimagudao/article/details/52420044" target="_blank"> 上传文件 index.jsp JSP Page 输入你的名字：... </a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/yimagudao" title="yimagudao" target="_blank">
+						<img src="https://avatar.csdn.net/1/D/7/3_yimagudao.jpg" alt="yimagudao" class="avatar-pic"> <span class="name">yimagudao</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2016-09-02 23:39:56</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：1024</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/shy323/7248519" target="_blank" strategy="BlogCommendFromQuerySearch_21">
+						<em>SmartUpload</em><em>中文</em>乱码解决
+					</a>
+				</h4>
+				<p>
+					<span class="data">2014年04月24日 </span> <span class="size">22KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/shy323/7248519" target="_blank" strategy="BlogCommendFromQuerySearch_21">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/unkonw.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/fenghuayoushi/article/details/6071744" target="_blank" strategy="BlogCommendFromQuerySearch_22">
+					ArcGIS 10 官方<em>中文</em>在线<em>帮助</em>文档，相当nice
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/fenghuayoushi/article/details/6071744" target="_blank">
+					欢迎使用 ArcGIS <em>帮助</em>库http://help.arcgis.com/zh-cn/arcgisdesktop/10.0/help/index.htmlResource Center欢迎使用 Ar...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/fenghuayoushi" title="fenghuayoushi" target="_blank">
+						<img src="https://avatar.csdn.net/F/D/9/3_fenghuayoushi.jpg" alt="fenghuayoushi" class="avatar-pic"> <span class="name">fenghuayoushi</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2010-12-12 20:59:00</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：42286</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/rleo102030/7518513" target="_blank" strategy="BlogCommendFromQuerySearch_23">
+						OD插件开发<em>中文</em><em>帮助</em>手册 <em>API</em> MSDN OLLYDBG
+					</a>
+				</h4>
+				<p>
+					<span class="data">2014年06月18日 </span> <span class="size">1.28MB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/rleo102030/7518513" target="_blank" strategy="BlogCommendFromQuerySearch_23">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/rar.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-ad-box" id="yd_a_d_feed_13">
+			<iframe scrolling="no" style="width: 100%; height: 90px; border: 0px;"></iframe>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/cxc19890214/article/details/39214905" target="_blank" strategy="BlogCommendFromQuerySearch_24">
+					<em>SmartUpload</em>上传下载及文件名和文件内容<em>中文</em>问题
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/cxc19890214/article/details/39214905" target="_blank">
+					一、安装篇 jsp<em>SmartUpload</em>是由www.jspsmart.com网站开发的一个可免费使用的全功能的文件上传下载组件，适于嵌入执行上传下载操作的JSP文件中。该组件有以下几个特点： 1、...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/cxc19890214" title="cxc19890214" target="_blank">
+						<img src="https://avatar.csdn.net/7/2/8/3_cxc19890214.jpg" alt="cxc19890214" class="avatar-pic"> <span class="name">cxc19890214</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2014-09-11 23:49:31</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：4005</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/begtostudy/article/details/4750481" target="_blank" strategy="BlogCommendFromQuerySearch_25">
+					UG OPEN C <em>API</em> 函数参考手册(nx6) CHM版
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/begtostudy/article/details/4750481" target="_blank">
+					首先感谢原作者！&nbsp;&nbsp;这个是UG NX6 Open C的CHM文件版不用安装UG<em>帮助</em>，方便携带和使用。&nbsp;&nbsp;&nbsp;下载地址&nbsp;...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/begtostudy" title="begtostudy" target="_blank">
+						<img src="https://avatar.csdn.net/E/4/6/3_begtostudy.jpg" alt="begtostudy" class="avatar-pic"> <span class="name">begtostudy</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2009-10-31 09:13:00</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：6040</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/EdwardDrew/article/details/51105575" target="_blank" strategy="BlogCommendFromQuerySearch_26">
+					Jsp<em>SmartUpload</em><em>中文</em>乱码问题解决
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/EdwardDrew/article/details/51105575" target="_blank">
+					Jsp<em>SmartUpload</em>简介 jsp<em>SmartUpload</em>是一个可免费使用的全功能的文件上传下载组件，适于嵌入执行上传下载操作的JSP文件中。 <em>中文</em>乱码问题 上网查了下很多方法，但还是乱码。...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/EdwardDrew" title="EdwardDrew" target="_blank">
+						<img src="https://avatar.csdn.net/4/5/F/3_edwarddrew.jpg" alt="EdwardDrew" class="avatar-pic"> <span class="name">EdwardDrew</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2016-04-09 15:50:49</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：4333</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/cartonwang/728517" target="_blank" strategy="BlogCommendFromQuerySearch_27">
+						真正解决jsp<em>SmartUpload</em>组件上传下载文件时<em>中文</em>乱码问题
+					</a>
+				</h4>
+				<p>
+					<span class="data">2008年10月28日 </span> <span class="size">13KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/cartonwang/728517" target="_blank" strategy="BlogCommendFromQuerySearch_27">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/zip.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/zhuocongzhang/9416472" target="_blank" strategy="BlogCommendFromQuerySearch_28">
+						numpy<em>帮助</em>文档
+					</a>
+				</h4>
+				<p>
+					<span class="data">2016年01月24日 </span> <span class="size">9.22MB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/zhuocongzhang/9416472" target="_blank" strategy="BlogCommendFromQuerySearch_28">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/zip.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-ad-box" id="_mijvfly7hu">
+			<iframe id="iframeu3394176_1" name="iframeu3394176_1"
+				src="https://pos.baidu.com/kckm?conwid=800&amp;conhei=100&amp;rdid=3394176&amp;dc=3&amp;di=u3394176&amp;dri=1&amp;dis=0&amp;dai=6&amp;ps=10152x63&amp;enu=encoding&amp;dcb=___adblockplus&amp;dtm=HTML_POST&amp;dvi=0.0&amp;dci=-1&amp;dpt=none&amp;tsr=0&amp;tpr=1527342757837&amp;ti=SmartUpload%20%E4%B8%AD%E6%96%87API%E5%B8%AE%E5%8A%A9%20-%20CSDN%E5%8D%9A%E5%AE%A2&amp;ari=2&amp;dbv=2&amp;drs=4&amp;pcs=1343x619&amp;pss=1343x10225&amp;cfv=0&amp;cpl=33&amp;chi=1&amp;cce=true&amp;cec=UTF-8&amp;tlm=1527342766&amp;prot=2&amp;rw=619&amp;ltu=https%3A%2F%2Fblog.csdn.net%2Fu010735684%2Farticle%2Fdetails%2F48464313&amp;ltr=https%3A%2F%2Fwww.baidu.com%2Flink%3Furl%3DclP_umOgIZJ6o-xaT0ZoHcXRRn9iG8qoFQajV8KvaxE-kXEkTwD2c6jdtxXvf1-3EUGuu-F-STIJEV6kNagfU15xpBoHIixhlrLxrGwlSRO%26wd%3D%26eqid%3Db042a31a00002458000000065b09667d&amp;ecd=1&amp;uc=1360x738&amp;pis=-1x-1&amp;sr=1360x768&amp;tcn=1527342767&amp;qn=c994b16634363614&amp;tt=1527342757200.9357.9357.9358"
+				width="800" height="100" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border: 0; vertical-align: bottom; margin: 0; width: 800px; height: 100px" allowtransparency="true"></iframe>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/xiaowoxiaoniu/3368873" target="_blank" strategy="BlogCommendFromQuerySearch_29">
+						<em>smartUpload</em><em>中文</em><em>帮助</em>
+					</a>
+				</h4>
+				<p>
+					<span class="data">2011年06月15日 </span> <span class="size">7KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/xiaowoxiaoniu/3368873" target="_blank" strategy="BlogCommendFromQuerySearch_29">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/unkonw.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/tingxiao2177/article/details/2251969" target="_blank" strategy="BlogCommendFromQuerySearch_30">
+					如何让 eclipse 全面 使用 Java <em>API</em><em>中文</em><em>帮助</em>文档
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/tingxiao2177/article/details/2251969" target="_blank"> 在Eclipse中,如何做到把鼠标放在某个函数或类上面,就能显示相应函数说明? [Re: cartoonman] Copy to ... </a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/tingxiao2177" title="tingxiao2177" target="_blank">
+						<img src="https://avatar.csdn.net/C/5/1/3_tingxiao2177.jpg" alt="tingxiao2177" class="avatar-pic"> <span class="name">tingxiao2177</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2008-04-04 19:44:00</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：9620</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/c4641685/8322501" target="_blank" strategy="BlogCommendFromQuerySearch_31">
+						Revit 2014 <em>API</em> <em>帮助</em>文档.chm
+					</a>
+				</h4>
+				<p>
+					<span class="data">2015年01月03日 </span> <span class="size">38.11MB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/c4641685/8322501" target="_blank" strategy="BlogCommendFromQuerySearch_31">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/unkonw.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/jelin/861329" target="_blank" strategy="BlogCommendFromQuerySearch_32">
+						<em>SmartUpload</em> 用于JDK1.4(<em>中文</em>终极解决版,包括<em>中文</em>文件名上传后乱码,<em>中文</em>参数,下载)
+					</a>
+				</h4>
+				<p>
+					<span class="data">2008年12月11日 </span> <span class="size">15KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/jelin/861329" target="_blank" strategy="BlogCommendFromQuerySearch_32">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/zip.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/chenjunfang/1347010" target="_blank" strategy="BlogCommendFromQuerySearch_33">
+						ireport<em>中文</em><em>帮助</em>文档
+					</a>
+				</h4>
+				<p>
+					<span class="data">2009年05月24日 </span> <span class="size">2.28MB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/chenjunfang/1347010" target="_blank" strategy="BlogCommendFromQuerySearch_33">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/rar.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-ad-box" id="yd_a_d_feed_15">
+			<iframe scrolling="no" style="width: 100%; height: 90px; border: 0px;"></iframe>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/cyq1162/2421874" target="_blank" strategy="BlogCommendFromQuerySearch_34">
+						m<em>api</em>nfo <em>中文</em><em>帮助</em>文档
+					</a>
+				</h4>
+				<p>
+					<span class="data">2010年06月03日 </span> <span class="size">7.99MB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/cyq1162/2421874" target="_blank" strategy="BlogCommendFromQuerySearch_34">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/rar.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/qq_30408111/article/details/78833156" target="_blank" strategy="BlogCommendFromQuerySearch_35">
+					解决<em>smartupload</em>获取不到表单值以及<em>中文</em>乱码的问题
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/qq_30408111/article/details/78833156" target="_blank"> 最近在做一个小项目的时候，设计到一个表单同时要上传图片和输入框数据的问题，出现了两个问题，现在简单记录一下，自己的完成过程。 附上自己的前台代码，一个表单同时包含文件上传个输入框数据的传输，在web... </a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/qq_30408111" title="qq_30408111" target="_blank">
+						<img src="https://avatar.csdn.net/E/1/5/3_qq_30408111.jpg" alt="qq_30408111" class="avatar-pic"> <span class="name">qq_30408111</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2017-12-18 15:32:55</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：485</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/BryanMelody/article/details/66968988" target="_blank" strategy="BlogCommendFromQuerySearch_36">
+					解决<em>smartupload</em>组件上传<em>中文</em>乱码问题
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/BryanMelody/article/details/66968988" target="_blank">
+					只是从网上重新找了一个<em>smartupload</em>组件，上传至附件以便过后使用，在代码中尝试直接使用su.getRequest().getParameter()成功 ...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/BryanMelody" title="BryanMelody" target="_blank">
+						<img src="https://avatar.csdn.net/D/4/7/3_bryanmelody.jpg" alt="BryanMelody" class="avatar-pic"> <span class="name">BryanMelody</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2017-03-27 10:49:17</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：254</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/a851248662/10239379" target="_blank" strategy="BlogCommendFromQuerySearch_37">
+						介绍<em>API</em>函数的<em>中文</em><em>帮助</em>文件.chm
+					</a>
+				</h4>
+				<p>
+					<span class="data">2018年02月04日 </span> <span class="size">343KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/a851248662/10239379" target="_blank" strategy="BlogCommendFromQuerySearch_37">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/zip.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/lqbest/1040038" target="_blank" strategy="BlogCommendFromQuerySearch_38">
+						PyQt4.chm<em>帮助</em>文档
+					</a>
+				</h4>
+				<p>
+					<span class="data">2009年02月24日 </span> <span class="size">5.25MB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/lqbest/1040038" target="_blank" strategy="BlogCommendFromQuerySearch_38">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/unkonw.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-ad-box" id="_lxr2jvsirm">
+			<iframe id="iframeu3394176_2" name="iframeu3394176_2"
+				src="https://pos.baidu.com/kckm?conwid=800&amp;conhei=100&amp;rdid=3394176&amp;dc=3&amp;di=u3394176&amp;dri=2&amp;dis=0&amp;dai=7&amp;ps=11493x63&amp;enu=encoding&amp;dcb=___adblockplus&amp;dtm=HTML_POST&amp;dvi=0.0&amp;dci=-1&amp;dpt=none&amp;tsr=0&amp;tpr=1527342757837&amp;ti=SmartUpload%20%E4%B8%AD%E6%96%87API%E5%B8%AE%E5%8A%A9%20-%20CSDN%E5%8D%9A%E5%AE%A2&amp;ari=2&amp;dbv=2&amp;drs=4&amp;pcs=1343x619&amp;pss=1343x11566&amp;cfv=0&amp;cpl=33&amp;chi=1&amp;cce=true&amp;cec=UTF-8&amp;tlm=1527342767&amp;prot=2&amp;rw=619&amp;ltu=https%3A%2F%2Fblog.csdn.net%2Fu010735684%2Farticle%2Fdetails%2F48464313&amp;ltr=https%3A%2F%2Fwww.baidu.com%2Flink%3Furl%3DclP_umOgIZJ6o-xaT0ZoHcXRRn9iG8qoFQajV8KvaxE-kXEkTwD2c6jdtxXvf1-3EUGuu-F-STIJEV6kNagfU15xpBoHIixhlrLxrGwlSRO%26wd%3D%26eqid%3Db042a31a00002458000000065b09667d&amp;ecd=1&amp;uc=1360x738&amp;pis=-1x-1&amp;sr=1360x768&amp;tcn=1527342768&amp;qn=a1df6ef0fd679634&amp;tt=1527342757200.10503.10503.10504"
+				width="800" height="100" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border: 0; vertical-align: bottom; margin: 0; width: 800px; height: 100px" allowtransparency="true"></iframe>
+		</div>
+		<div class="recommend-item-box csdn-tracking-statistics" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<h4 class="text-truncate">
+				<a href="https://blog.csdn.net/Singular__point/article/details/78783435" target="_blank" strategy="BlogCommendFromQuerySearch_39">
+					彻底解决<em>smartupload</em><em>中文</em>乱码问题（2017）
+				</a>
+			</h4>
+			<p class="content">
+				<a href="https://blog.csdn.net/Singular__point/article/details/78783435" target="_blank">
+					为了完成课程设计，找了好多资料，最终发现了这个，<em>smartupload</em>确实有点过时了，幸好找到了修改源码后的版本，并且自己进行了导出jar包。 链接：http://download.csdn.net/...
+				</a>
+			</p>
+			<div class="info-box d-flex align-content-center">
+				<p>
+					<a class="avatar" src="https://blog.csdn.net/Singular__point" title="Singular__point" target="_blank">
+						<img src="https://avatar.csdn.net/A/6/2/3_singular__point.jpg" alt="Singular__point" class="avatar-pic"> <span class="name">Singular__point</span>
+					</a>
+				</p>
+				<p>
+					<span class="date">2017-12-12 16:43:36</span>
+				</p>
+				<p>
+					<span class="read-num">阅读数：92</span>
+				</p>
+			</div>
+		</div>
+		<div class="recommend-item-box recommend-download-box csdn-tracking-statistics clearfix" data-mod="popu_387" data-poputype="feed" data-feed-show="false" data-dsm="post">
+			<div class="content float-left">
+				<h4 class="text-truncate">
+					<a href="https://download.csdn.net/download/xuhaitao5217/1388036" target="_blank" strategy="BlogCommendFromQuerySearch_40">
+						dom4j<em>中文</em><em>帮助</em>文档（如果你没用过它，那么它对你一定有<em>帮助</em>）
+					</a>
+				</h4>
+				<p>
+					<span class="data">2009年06月06日 </span> <span class="size">121KB</span> <span class="type">下载</span>
+				</p>
+			</div>
+			<div class="img-box float-right">
+				<a href="https://download.csdn.net/download/xuhaitao5217/1388036" target="_blank" strategy="BlogCommendFromQuerySearch_40">
+					<img src="http://csdnimg.cn/release/download/old_static/images/minetype/rar.svg" alt="">
+				</a>
+			</div>
+		</div>
+		<div class="recommend-loading-box" style="display: none;">
+			<img src="https://csdnimg.cn/release/phoenix/images/feedLoading.gif">
+		</div>
+		<div class="recommend-end-box">
+			<p class="text-center">
+				没有更多推荐了，
+				<a href="https://blog.csdn.net/" class="c-blue c-blue-hover c-blue-focus">返回首页</a>
+			</p>
+		</div>
+	</div>
+	</main>
+</body>
+</html>
