@@ -22,8 +22,8 @@ public class ServletUtils {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public static void action(HttpServlet servlet, HttpServletRequest req,
-			HttpServletResponse resp) throws ServletException, IOException {
+	public static void action(HttpServlet servlet, HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		String action = req.getParameter("action");
 		if (action == null) {
 			throw new ServletException("没有指定的方法：" + action);
@@ -57,6 +57,12 @@ public class ServletUtils {
 				throw new ServletException(e.getCause());
 			}
 		}
+	}
+
+	public static String buildHtml(String tag, String content, Object... params) {
+		String ret = "<" + tag + ">" + content + "</" + tag + ">";
+		ret = String.format(ret, params);
+		return ret;
 	}
 
 }
