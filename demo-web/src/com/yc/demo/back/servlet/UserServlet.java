@@ -24,8 +24,8 @@ public class UserServlet extends AutoServlet {
 		page = page == null ? 1 : page;
 		rows = rows == null ? 5 : rows;
 		int start = ( page - 1) * rows;
-		Object lists = DBHelper.findAll("select * from user limit ?,?", start, rows);
-		Object total = DBHelper.findAll("select count(*) cnt from user").get(0)
+		Object lists = DBHelper.find("select * from user limit ?,?", start, rows);
+		Object total = DBHelper.find("select count(*) cnt from user").get(0)
 				.get("cnt");
 		Map<?, ?> m = BeanUtils.asMap("rows", lists, "total", total);
 		Gson g = new Gson();

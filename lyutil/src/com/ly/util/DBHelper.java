@@ -152,7 +152,7 @@ public class DBHelper implements ServletContextListener {
 		}
 	}
 
-	public static List<Map<String, Object>> findAll(String sql, Object... params) {
+	public static List<Map<String, Object>> find(String sql, Object... params) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Connection con = getCon();
 		PreparedStatement pstm = null;

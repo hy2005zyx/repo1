@@ -9,7 +9,7 @@ public class ReportDao {
 	public List<Map<String, Object>> selectByMonth(String year, String month) {
 		String sql = "select * from lottery where substr(opendate,1,7)=?";
 		String date = year + "-" + month;
-		return DBHelper.findAll(sql, date);
+		return DBHelper.find(sql, date);
 	}
 	
 	public List<Map<String,Object>> sumSaleByYear(String year){
@@ -18,7 +18,7 @@ public class ReportDao {
 				" from lottery" + 
 				" where substr(opendate,1,4) = ?" + 
 				" group by substr(opendate,1,7)";
-		return DBHelper.findAll(sql, year);
+		return DBHelper.find(sql, year);
 	}
 	
 	/**
@@ -36,7 +36,7 @@ public class ReportDao {
 				+ " group by substr(opendate,1,7)";
 		String begin = Integer.parseInt(year) - 5 + "-" + month;
 		String end = year + "-" + month;
-		return DBHelper.findAll(sql, begin, end, month);
+		return DBHelper.find(sql, begin, end, month);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class ReportDao {
 				"        WHERE  SUBSTR (opendate, 1, 4) = ?" + 
 				"        GROUP  BY SUBSTR (opendate, 1, 7)) a" + 
 				" GROUP  BY SUBSTR (ym, 1, 4)";
-		return DBHelper.findAll(sql, year, year, year);
+		return DBHelper.find(sql, year, year, year);
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class ReportDao {
 				" FROM   lottery" + 
 				" WHERE  SUBSTR (opendate, 1, 4) = ?" + 
 				" GROUP  BY (CAST (SUBSTR (opendate, 6, 6) AS int) - 1) / 3";
-		return DBHelper.findAll(sql, year);
+		return DBHelper.find(sql, year);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public class ReportDao {
 				" union all" + 
 				" select blue from lottery where substr(opendate,1,4)=?)" + 
 				" group by boll";
-		return DBHelper.findAll(sql, year, year, year, year, year, year, year);
+		return DBHelper.find(sql, year, year, year, year, year, year, year);
 	}
 
 }

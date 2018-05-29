@@ -184,4 +184,18 @@ public class BeanUtils {
 
 	}
 
+	/**
+	 * 返回第一个不为空的值
+	 * @param values
+	 * @return
+	 */
+	public static Object notNull(Object... values) {
+		for (Object o : values) {
+			if (o != null) {
+				return o;
+			}
+		}
+		return null;
+	}
+
 }

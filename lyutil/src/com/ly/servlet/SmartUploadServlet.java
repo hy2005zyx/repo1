@@ -1,4 +1,4 @@
-package com.ly.util;
+package com.ly.servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,27 +18,27 @@ import com.jspsmart.upload.File;
 import com.jspsmart.upload.Files;
 import com.jspsmart.upload.SmartUpload;
 import com.jspsmart.upload.SmartUploadException;
+import com.ly.util.BeanUtils;
 
 public abstract class SmartUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String DENIED = "";
-
 	private Logger logger = Logger.getLogger(SmartUploadServlet.class);
 
-	//定义上传的路径
-	protected String PATH = "/upload";
-	//允许上传的文件
-	protected String ALLOWED = "gif,jpg,bmp,png";
-	//总大小
-	protected int TOTALMAXSIZE = 20 * 1024 * 1024;
-	//单个文件的总大小
-	protected int SINGLESIZE = 5 * 1024 * 1024;
+	// 定义上传的路径
+	protected String PATH;
+	// 允许上传的文件
+	protected String ALLOWED;
+	// 拒绝上传的文件
+	protected String DENIED;
+	// 总大小
+	protected int TOTALMAXSIZE;
+	// 单个文件的总大小
+	protected int SINGLESIZE;
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html;charset=utf-8");
 		SmartUpload su = new SmartUpload();
 		//初始化
@@ -46,16 +46,19 @@ public abstract class SmartUploadServlet extends HttpServlet {
 		 * 初始化针对Servlet化的改造
 		 */
 		try {
-			su.initialize(this.getServletConfig(), req, resp);
-			//su.initialize(pagecontext);
-			//允许上传的文件类型
+			su.initialize(getServletConfig(), req, resp);
+			// 添加参数Map
+			Map<String, String> params = new HashMap<String, String>();
+			req.setAttribute("params", params);
+
+			// 允许上传的文件类型
 			su.setAllowedFilesList(ALLOWED);
 			su.setDeniedFilesList(DENIED);
-			//文件编码集
+			// 文件编码集
 			su.setCharset("utf-8");
-			//最大大小
+			// 最大大小
 			su.setTotalMaxFileSize(TOTALMAXSIZE);
-			//单个文件的最大大小
+			// 单个文件的最大大小
 			su.setMaxFileSize(SINGLESIZE);
 			java.io.File pathDir = new java.io.File(getServletContext().getRealPath(PATH));
 			if (pathDir.exists() == false) {
@@ -63,9 +66,8 @@ public abstract class SmartUploadServlet extends HttpServlet {
 					throw new IOException("创建上传文件夹失败！路径：" + PATH);
 				}
 			}
-			//开始上传
+			// 开始上传
 			su.upload();
-			Map<String, String> params = new HashMap<String, String>();
 			for (@SuppressWarnings("unchecked")
 			Enumeration<String> e = su.getRequest().getParameterNames(); e.hasMoreElements();) {
 				String pname = e.nextElement();
@@ -73,9 +75,9 @@ public abstract class SmartUploadServlet extends HttpServlet {
 				params.put(pname, value);
 			}
 			if (su.getFiles() != null && su.getFiles().getCount() > 0) {
-				//得到上传的文件
+				// 得到上传的文件
 				Files fs = su.getFiles();
-				//得到文件的所有信息
+				// 得到文件的所有信息
 				@SuppressWarnings("unchecked")
 				Collection<File> col = fs.getCollection();
 				for (File f : col) {
@@ -87,17 +89,26 @@ public abstract class SmartUploadServlet extends HttpServlet {
 						// 保存 SAVE_VIRTUAL web根目录
 						f.saveAs(fname, SmartUpload.SAVE_VIRTUAL);
 						params.put(f.getFieldName(), fname);
-						logger.debug("文件字段 " + f.getFieldName() + "（" + f.getFileName() + "） 已经保存至 "
-								+ fname);
+						logger.debug("文件字段 " + f.getFieldName() + "（" + f.getFileName() + "） 已经保存至 " + fname);
 					}
 				}
+			} else {
+				logger.warn("没有上传的文件!");
 			}
-			req.setAttribute("params", params);
 		} catch (SecurityException e) {
 			throw e;
 		} catch (SmartUploadException | SQLException e) {
 			throw new ServletException(e);
 		}
+	}
+
+	@Override
+	public void init() throws ServletException {
+		PATH = (String) BeanUtils.notNull(getInitParameter("PATH"), "/upload");
+		ALLOWED = (String) BeanUtils.notNull(getInitParameter("ALLOWED"), "gif,jpg,bmp,png,txt,doc,xls");
+		DENIED = (String) BeanUtils.notNull(getInitParameter("DENIED"), "");
+		TOTALMAXSIZE = (int) BeanUtils.notNull(getInitParameter("TOTALMAXSIZE"), 20 * 1024 * 1024);
+		SINGLESIZE = (int) BeanUtils.notNull(getInitParameter("SINGLESIZE"), 5 * 1024 * 1024);
 	}
 
 }
