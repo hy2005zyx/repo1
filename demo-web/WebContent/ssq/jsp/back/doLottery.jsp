@@ -19,7 +19,7 @@
 	pb.setPagesize(pagesize);
 	
 	String sql01 = "select count(*) as total from lottery where 1=1  ";
-	long total = Long.parseLong(DBHelper.findAll(sql01).get(0).get("total").toString());
+	long total = Long.parseLong(DBHelper.find(sql01).get(0).get("total").toString());
 	pb.setTotal(total);
 	pb.setTotalpage((total%pagesize==0?total/pagesize:total/pagesize+1));
 	
