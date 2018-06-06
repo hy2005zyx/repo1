@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 
 import com.jspsmart.upload.File;
 import com.jspsmart.upload.Files;
@@ -23,8 +22,6 @@ import com.ly.util.BeanUtils;
 public abstract class SmartUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	private Logger logger = Logger.getLogger(SmartUploadServlet.class);
 
 	// 定义上传的路径
 	protected String PATH;
@@ -89,11 +86,11 @@ public abstract class SmartUploadServlet extends HttpServlet {
 						// 保存 SAVE_VIRTUAL web根目录
 						f.saveAs(fname, SmartUpload.SAVE_VIRTUAL);
 						params.put(f.getFieldName(), fname);
-						logger.debug("文件字段 " + f.getFieldName() + "（" + f.getFileName() + "） 已经保存至 " + fname);
+						System.out.println("文件字段 " + f.getFieldName() + "（" + f.getFileName() + "） 已经保存至 " + fname);
 					}
 				}
 			} else {
-				logger.warn("没有上传的文件!");
+				System.err.println("没有上传的文件!");
 			}
 		} catch (SecurityException e) {
 			throw e;
