@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar" sourcepath="D:/dev/repository/org/apache/tomcat/tomcat-servlet-api/8.0.51/tomcat-servlet-api-8.0.51-sources.jar"/>
 	<classpathentry kind="lib" path="lib/smartupload.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>

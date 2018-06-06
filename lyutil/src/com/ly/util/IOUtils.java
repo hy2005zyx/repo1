@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
@@ -21,7 +22,7 @@ public class IOUtils {
 	}
 
 	/**
-	 * ѭ����ȡ�ı�����Ĭ��UTF-8�ַ�������
+	 * 以文本方式读入输入流，并逐行输出，默认UTF-8编码
 	 * @param is
 	 * @return
 	 */
@@ -30,7 +31,7 @@ public class IOUtils {
 	}
 
 	/**
-	 * ѭ����ȡ�ı���
+	 * 以文本方式读入输入流，并逐行输出
 	 * @param is
 	 * @param charset
 	 * @return
@@ -67,6 +68,10 @@ public class IOUtils {
 		};
 	}
 
+	/**
+	 * 关闭资源
+	 * @param closies
+	 */
 	public static void close(Closeable... closies) {
 		for (Closeable c : closies) {
 			if (c != null) {
@@ -77,6 +82,51 @@ public class IOUtils {
 				}
 			}
 		}
+	}
+
+	public static void send(OutputStream out, InputStream in) throws IOException {
+		send(out, in, 0, 0);
+	}
+
+	public static void send(OutputStream out, InputStream in, long pos, long maxSize) throws IOException {
+		byte[] buffer = new byte[1024];
+		int count;
+		if (pos > 0) {
+			in.skip(pos);
+		}
+		long size = 0;
+		while ((count = in.read(buffer, 0, buffer.length)) > 0) {
+			if (maxSize > 0 && size + count > maxSize) {
+				count = (int) (maxSize - size);
+			}
+			out.write(buffer, 0, count);
+			size += count;
+		}
+	}
+
+	public static void save(RandomAccessFile out, InputStream in, long pos, long maxSize) throws IOException {
+		byte[] buffer = new byte[1024];
+		int count;
+		if (pos > 0) {
+			in.skip(pos);
+			out.seek(pos);
+		}
+		long size = 0;
+		while ((count = in.read(buffer, 0, buffer.length)) > 0) {
+			if (maxSize > 0 && size + count > maxSize) {
+				count = (int) (maxSize - size);
+			}
+			out.write(buffer, 0, count);
+			size += count;
+		}
+	}
+
+	public static void println(String msg, Object... objs) {
+		System.out.println(String.format(msg, objs));
+	}
+
+	public static void print(String msg, Object... objs) {
+		System.out.print(String.format(msg, objs));
 	}
 
 }
