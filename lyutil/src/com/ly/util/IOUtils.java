@@ -22,27 +22,19 @@ public class IOUtils {
 	}
 
 	/**
-	 * 以文本方式读入输入流，并逐行输出，默认UTF-8编码
-	 * @param is
-	 * @return
-	 */
-	public static Iterable<String> readText(InputStream is) {
-		return readText(is, "utf-8");
-	}
-
-	/**
 	 * 以文本方式读入输入流，并逐行输出
 	 * @param is
 	 * @param charset
 	 * @return
+	 * @throws IOException 
 	 */
-	public static Iterable<String> readText(InputStream is, String charset) {
+	public static Iterable<String> readLine(InputStream is, String charset, Object... endValues) throws IOException {
 		BufferedReader br = buildBufferedReader(is);
 		return new Iterable<String>() {
 			@Override
 			public Iterator<String> iterator() {
 				return new Iterator<String>() {
-					String line = null;
+					String line;
 
 					@Override
 					public boolean hasNext() {
@@ -50,8 +42,17 @@ public class IOUtils {
 							line = br.readLine();
 						} catch (IOException e) {
 							e.printStackTrace();
+							return false;
 						}
-						return line != null;
+						if (line != null) {
+							for (Object endValue : endValues) {
+								if (line.equals(endValue) || line.matches("" + endValue)) {
+									return false;
+								}
+							}
+							return true;
+						}
+						return false;
 					}
 
 					@Override
@@ -112,7 +113,7 @@ public class IOUtils {
 			out.seek(pos);
 		}
 		long size = 0;
-		while ((count = in.read(buffer, 0, buffer.length)) > 0) {
+		while ((count = in.read(buffer)) > 0) {
 			if (maxSize > 0 && size + count > maxSize) {
 				count = (int) (maxSize - size);
 			}
