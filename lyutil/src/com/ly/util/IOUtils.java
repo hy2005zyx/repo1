@@ -68,7 +68,7 @@ public class IOUtils {
 			}
 		};
 	}
-
+	
 	/**
 	 * 关闭资源
 	 * @param closies
@@ -128,6 +128,12 @@ public class IOUtils {
 
 	public static void print(String msg, Object... objs) {
 		System.out.print(String.format(msg, objs));
+	}
+
+	public static void print(InputStream in, String charset) throws IOException {
+		for (String line : readLine(in, charset)) {
+			System.out.println(line);
+		}
 	}
 
 }
