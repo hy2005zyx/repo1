@@ -1,5 +1,6 @@
 package com.ly.util;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -13,12 +14,23 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 public class IOUtils {
+
+	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
 	public static PrintWriter buildPrintWriter(OutputStream os) {
 		return new PrintWriter(new OutputStreamWriter(os));
 	}
 
 	public static BufferedReader buildBufferedReader(InputStream is) {
 		return new BufferedReader(new InputStreamReader(is));
+	}
+
+	public static BufferedReader buildBufferedReader(InputStream is, String charset) {
+		try {
+			return new BufferedReader(new InputStreamReader(is, charset));
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
@@ -28,29 +40,71 @@ public class IOUtils {
 	 * @return
 	 * @throws IOException 
 	 */
-	public static Iterable<String> readLine(InputStream is, String charset, Object... endValues) throws IOException {
-		BufferedReader br = buildBufferedReader(is);
+	public static Iterable<String> eachLine(InputStream is, String... charsets) {
+		String charset = charsets.length > 0 ? charsets[0] : null;
+		BufferedReader br;
+		if (charset == null) {
+			br = buildBufferedReader(is);
+		} else {
+			br = buildBufferedReader(is, charset);
+		}
 		return new Iterable<String>() {
 			@Override
 			public Iterator<String> iterator() {
 				return new Iterator<String>() {
+
 					String line;
 
 					@Override
 					public boolean hasNext() {
+						// 为了避免阻塞，使用 available 方法判断有无数据可读
 						try {
 							line = br.readLine();
+							return line != null;
 						} catch (IOException e) {
 							e.printStackTrace();
 							return false;
 						}
-						if (line != null) {
-							for (Object endValue : endValues) {
-								if (line.equals(endValue) || line.matches("" + endValue)) {
-									return false;
-								}
+					}
+
+					@Override
+					public String next() {
+						String ret = line;
+						line = null;
+						return ret;
+					}
+				};
+			}
+		};
+	}
+
+	public static Iterable<String> eachString(InputStream is, String... charsets) {
+		String charset = charsets.length > 0 ? charsets[0] : null;
+		BufferedInputStream bis = new BufferedInputStream(is);
+		return new Iterable<String>() {
+			@Override
+			public Iterator<String> iterator() {
+				return new Iterator<String>() {
+					byte[] buffer = new byte[1024];
+					int length;
+					int availableSize = 1;
+
+					@Override
+					public boolean hasNext() {
+						try {
+							if (availableSize > 0) {
+								length = bis.read(buffer);
+								/**
+								 * 第一次 read() 之前 available() 返回的是 0
+								 * 因此要在 read() 之后才能调用 available()
+								 */
+								availableSize = bis.available();
+								return length > 0;
+							} else {
+								return false;
 							}
-							return true;
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
 						return false;
 					}
@@ -58,7 +112,8 @@ public class IOUtils {
 					@Override
 					public String next() {
 						try {
-							return charset != null ? new String(line.getBytes(), charset) : line;
+							return charset == null ? new String(buffer, 0, length)
+									: new String(buffer, 0, length, charset);
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 							return null;
@@ -68,7 +123,15 @@ public class IOUtils {
 			}
 		};
 	}
-	
+
+	public static String readString(InputStream in, String... charsets) {
+		StringBuilder sb = new StringBuilder();
+		for (String s : eachString(in, charsets)) {
+			sb.append(s);
+		}
+		return sb.toString();
+	}
+
 	/**
 	 * 关闭资源
 	 * @param closies
@@ -130,10 +193,15 @@ public class IOUtils {
 		System.out.print(String.format(msg, objs));
 	}
 
-	public static void print(InputStream in, String charset) throws IOException {
-		for (String line : readLine(in, charset)) {
+	public static void println(InputStream in, String charset) throws IOException {
+		for (String line : eachLine(in, charset)) {
 			System.out.println(line);
 		}
 	}
 
+	public static void printlnAll(Object... msgs) {
+		for (Object msg : msgs) {
+			println("" + msg);
+		}
+	}
 }
