@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import com.jspsmart.upload.File;
 import com.jspsmart.upload.Files;
 import com.jspsmart.upload.SmartUpload;
@@ -94,7 +93,9 @@ public abstract class SmartUploadServlet extends HttpServlet {
 			}
 		} catch (SecurityException e) {
 			throw e;
-		} catch (SmartUploadException | SQLException e) {
+		} catch (SmartUploadException e) {
+			throw new ServletException(e);
+		} catch (SQLException e) {
 			throw new ServletException(e);
 		}
 	}
@@ -104,8 +105,8 @@ public abstract class SmartUploadServlet extends HttpServlet {
 		PATH = (String) BeanUtils.notNull(getInitParameter("PATH"), "/upload");
 		ALLOWED = (String) BeanUtils.notNull(getInitParameter("ALLOWED"), "gif,jpg,bmp,png,txt,doc,xls");
 		DENIED = (String) BeanUtils.notNull(getInitParameter("DENIED"), "");
-		TOTALMAXSIZE = (int) BeanUtils.notNull(getInitParameter("TOTALMAXSIZE"), 20 * 1024 * 1024);
-		SINGLESIZE = (int) BeanUtils.notNull(getInitParameter("SINGLESIZE"), 5 * 1024 * 1024);
+		TOTALMAXSIZE = (Integer) BeanUtils.notNull(getInitParameter("TOTALMAXSIZE"), 20 * 1024 * 1024);
+		SINGLESIZE = (Integer) BeanUtils.notNull(getInitParameter("SINGLESIZE"), 5 * 1024 * 1024);
 	}
 
 }
