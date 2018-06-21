@@ -193,8 +193,8 @@ public class IOUtils {
 		System.out.print(String.format(msg, objs));
 	}
 
-	public static void println(InputStream in, String charset) throws IOException {
-		for (String line : eachLine(in, charset)) {
+	public static void println(InputStream in, String... charsets) throws IOException {
+		for (String line : eachLine(in, charsets)) {
 			System.out.println(line);
 		}
 	}
