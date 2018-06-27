@@ -3,11 +3,8 @@ package com.ly.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,9 +12,6 @@ import java.util.Map;
 import javax.servlet.ServletRequest;
 
 public class BeanUtils {
-
-	static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-	static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	/**
 	 * 将请求参数转换设置到bean的各个字段中
@@ -89,82 +83,51 @@ public class BeanUtils {
 	@SuppressWarnings("unchecked")
 	/**
 	 * 将字符串转成指定的类型
+	 * 支持类型：	8种基本数据类型、String、java.math.BigDecimal、
+	 * 			java.sql.Date、java.sql.Timestamp
 	 * @param svalue
 	 * @param cls
 	 * @return
 	 */
-	public static <T> T cast(String svalue, Class<T> cls) throws ParseException {
+	public static <T> T cast(String svalue, Class<T> cls) {
 		//空值跳过
-		if (svalue == null)
-			return null;
-		//声明转换后的值变量
-		T ovalue = null;
-		//判断字段的类型
-		switch (cls.getName().toLowerCase()) {
-		case "java.lang.string":
-			ovalue = (T) svalue;
-			break;
-		case "java.lang.byte":
-			ovalue = (T) Byte.valueOf(Byte.parseByte(svalue));
-			break;
-		case "java.lang.short":
-			ovalue = (T) Short.valueOf(Short.parseShort(svalue));
-			break;
-		case "java.lang.integer":
-			ovalue = (T) Integer.valueOf(Integer.parseInt(svalue));
-			break;
-		case "java.lang.long":
-			ovalue = (T) Long.valueOf(Long.parseLong(svalue));
-			break;
-		case "java.lang.float":
-			ovalue = (T) Float.valueOf(Float.parseFloat(svalue));
-			break;
-		case "java.lang.double":
-			ovalue = (T) Double.valueOf(Double.parseDouble(svalue));
-			break;
-		case "java.lang.boolean":
-			ovalue = (T) Boolean.valueOf(Boolean.parseBoolean(svalue));
-			break;
-		case "java.util.date":
-			ovalue = (T) new SimpleDateFormat(DEFAULT_DATE_FORMAT).parse(svalue);
-			break;
-		case "java.sql.date":
-			ovalue = (T) new SimpleDateFormat(DEFAULT_DATE_FORMAT).parse(svalue);
-			ovalue = (T) new java.sql.Date(((Date) ovalue).getTime());
-			break;
-		case "java.sql.timestamp":
-			ovalue = (T) new SimpleDateFormat(DEFAULT_DATETIME_FORMAT).parse(svalue);
-			ovalue = (T) new Timestamp(((Date) ovalue).getTime());
-			break;
-		case "java.lang.character":
-			ovalue = (T) Character.valueOf(svalue.charAt(0));
-			break;
-		}
-		return ovalue;
-	}
-
-	public static boolean canCast(Class<?> cls) {
-		if (cls.isPrimitive()) {
-			return true;
-		} else {
-			switch (cls.getName().toLowerCase()) {
-			case "java.lang.string":
-			case "java.lang.integer":
-			case "java.lang.long":
-			case "java.lang.boolean":
-			case "java.util.date":
-			case "java.sql.date":
-			case "java.sql.timestamp":
-			case "java.lang.float":
-			case "java.lang.double":
-			case "java.lang.character":
-			case "java.lang.byte":
-			case "java.lang.short":
-				return true;
-			default:
-				return false;
+		if (svalue != null)
+			//判断字段的类型
+			switch (cls.getName()) {
+			case "java.lang.String":
+				return (T) svalue;
+			case "int":
+			case "java.lang.Integer":
+				return (T) Integer.valueOf(svalue);
+			case "long":
+			case "java.lang.Long":
+				return (T) Long.valueOf(svalue);
+			case "float":
+			case "java.lang.Float":
+				return (T) Float.valueOf(svalue);
+			case "double":
+			case "java.lang.Double":
+				return (T) Double.valueOf(svalue);
+			case "boolean":
+			case "java.lang.Boolean":
+				return (T) Boolean.valueOf(svalue);
+			case "java.sql.Date":
+				return (T) java.sql.Date.valueOf(svalue);
+			case "java.sql.Timestamp":
+				return (T) Timestamp.valueOf(svalue);
+			case "java.math.BigDecimal":
+				return (T) new java.math.BigDecimal(svalue);
+			case "byte":
+			case "java.lang.Byte":
+				return (T) Byte.valueOf(svalue);
+			case "short":
+			case "java.lang.Short":
+				return (T) Short.valueOf(svalue);
+			case "char":
+			case "java.lang.Character":
+				return svalue.length() > 1 ? (T) Character.valueOf(svalue.charAt(0)) : null;
 			}
-		}
+		return null;
 	}
 
 	/**
