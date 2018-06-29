@@ -3,10 +3,16 @@ package com.ly.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
+<<<<<<< HEAD
 import java.text.SimpleDateFormat;
+=======
+>>>>>>> branch 'master' of https://github.com/hy2005zyx/repo1.git
 import java.util.ArrayList;
 import java.util.Collection;
+<<<<<<< HEAD
 import java.sql.Date;
+=======
+>>>>>>> branch 'master' of https://github.com/hy2005zyx/repo1.git
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,9 +20,6 @@ import java.util.Map;
 import javax.servlet.ServletRequest;
 
 public class BeanUtils {
-
-	static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-	static final String DEFAULT_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	/**
 	 * 将请求参数转换设置到bean的各个字段中
@@ -88,12 +91,15 @@ public class BeanUtils {
 	@SuppressWarnings("unchecked")
 	/**
 	 * 将字符串转成指定的类型
+	 * 支持类型：	8种基本数据类型、String、java.math.BigDecimal、
+	 * 			java.sql.Date、java.sql.Timestamp
 	 * @param svalue
 	 * @param cls
 	 * @return
 	 */
 	public static <T> T cast(String svalue, Class<T> cls) {
 		//空值跳过
+<<<<<<< HEAD
 		if (svalue == null)
 			return null;
 		//声明转换后的值变量
@@ -157,8 +163,45 @@ public class BeanUtils {
 				return true;
 			default:
 				return false;
+=======
+		if (svalue != null)
+			//判断字段的类型
+			switch (cls.getName()) {
+			case "java.lang.String":
+				return (T) svalue;
+			case "int":
+			case "java.lang.Integer":
+				return (T) Integer.valueOf(svalue);
+			case "long":
+			case "java.lang.Long":
+				return (T) Long.valueOf(svalue);
+			case "float":
+			case "java.lang.Float":
+				return (T) Float.valueOf(svalue);
+			case "double":
+			case "java.lang.Double":
+				return (T) Double.valueOf(svalue);
+			case "boolean":
+			case "java.lang.Boolean":
+				return (T) Boolean.valueOf(svalue);
+			case "java.sql.Date":
+				return (T) java.sql.Date.valueOf(svalue);
+			case "java.sql.Timestamp":
+				return (T) Timestamp.valueOf(svalue);
+			case "java.math.BigDecimal":
+				return (T) new java.math.BigDecimal(svalue);
+			case "byte":
+			case "java.lang.Byte":
+				return (T) Byte.valueOf(svalue);
+			case "short":
+			case "java.lang.Short":
+				return (T) Short.valueOf(svalue);
+			case "char":
+			case "java.lang.Character":
+				return svalue.length() > 1 ? (T) Character.valueOf(svalue.charAt(0)) : null;
+>>>>>>> branch 'master' of https://github.com/hy2005zyx/repo1.git
 			}
-		}
+		return null;
 	}
 
 	/**
