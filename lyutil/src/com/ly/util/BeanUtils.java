@@ -3,11 +3,10 @@ package com.ly.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -93,7 +92,7 @@ public class BeanUtils {
 	 * @param cls
 	 * @return
 	 */
-	public static <T> T cast(String svalue, Class<T> cls) throws ParseException {
+	public static <T> T cast(String svalue, Class<T> cls) {
 		//空值跳过
 		if (svalue == null)
 			return null;
@@ -125,19 +124,14 @@ public class BeanUtils {
 		case "java.lang.boolean":
 			ovalue = (T) Boolean.valueOf(Boolean.parseBoolean(svalue));
 			break;
-		case "java.util.date":
-			ovalue = (T) new SimpleDateFormat(DEFAULT_DATE_FORMAT).parse(svalue);
-			break;
-		case "java.sql.date":
-			ovalue = (T) new SimpleDateFormat(DEFAULT_DATE_FORMAT).parse(svalue);
-			ovalue = (T) new java.sql.Date(((Date) ovalue).getTime());
-			break;
-		case "java.sql.timestamp":
-			ovalue = (T) new SimpleDateFormat(DEFAULT_DATETIME_FORMAT).parse(svalue);
-			ovalue = (T) new Timestamp(((Date) ovalue).getTime());
-			break;
 		case "java.lang.character":
 			ovalue = (T) Character.valueOf(svalue.charAt(0));
+			break;
+		case "java.sql.date":		// 注意：接收日期类型有格式的问题
+			ovalue = (T) Date.valueOf(svalue);
+			break;
+		case "java.sql.timestamp":	// 注意：接收日期类型有格式的问题
+			ovalue = (T) Timestamp.valueOf(svalue);
 			break;
 		}
 		return ovalue;
